@@ -32,7 +32,7 @@ class PlanFragment : Fragment() {
     lateinit var stepsNum: EditText
     var Date = ""
     var formattedDate = ""
-
+    var hello = ""
 
     //When you click this tab it opens up a Calendar view of the dates recorded on the calendar
         //When you click a date. it brings up that dates info and has a box view under it labelled
