@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">FYPFinal</string>
+    <string name="selected_item">Selected item:</string>
+
+    <string-array name="Gender">
+        <item>Unselected</item>
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="Fitness_Goal">
+        <item>Unselected</item>
+        <item>Muscle Build</item>
+        <item>Weight Loss</item>
+        <item>Other / General</item>
+    </string-array>
+
+    <string-array name="Injury">
+        <item>Unselected</item>
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+
+    <string-array name="Workout">
+        <item>Unselected</item>
+        <item>Strength</item>
+        <item>Cardiovascular</item>
+        <item>Yoga</item>
+    </string-array>
+
+
+
+
+
+</resources>

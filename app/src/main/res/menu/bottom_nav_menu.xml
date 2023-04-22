@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Home"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:id="@+id/home"/>
+    <item android:title="Training"
+        android:icon="@drawable/ic_baseline_directions_run_24"
+        android:id="@+id/train"/>
+    <item android:title="Stats"
+        android:icon="@drawable/ic_baseline_bar_chart_24"
+        android:id="@+id/stats"/>
+    <item android:title="Plan"
+        android:icon="@drawable/ic_baseline_calendar_today_24"
+        android:id="@+id/plan"/>
+    <item android:title="Settings"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:id="@+id/settings"/>
+</menu>
