@@ -31,11 +31,11 @@ interface CalendarDao2 {
 
     //select first date
     @Query("SELECT date FROM calendar ORDER BY date ASC LIMIT 1")
-    suspend fun getFirstRecordedDate(): String?
+    suspend fun getFirstRecordedDate(): String
 
     //select last date
     @Query("SELECT date FROM calendar ORDER BY date DESC LIMIT 1")
-    suspend fun getLastRecordedDate(): String?
+    suspend fun getLastRecordedDate(): String
 
 //    @Query("SELECT date, workout_goals FROM plan_list WHERE date = :input")
 //    suspend fun getWorkoutGoals(input: String): Plan?
@@ -60,8 +60,8 @@ interface CalendarDao2 {
     suspend fun updateGoalsSelected(date: String)
 
     //Checks which dates have goals set
-    @Query("SELECT * FROM plan_list WHERE Goals_Today_Boolean = 1")
-    suspend fun getPlansWithSelectedGoals(): List<Plan>
+    @Query("SELECT date FROM plan_list WHERE Goals_Today_Boolean = 1")
+    suspend fun getDatesWithSelectedGoals(): List<String>
 
     //Checks if boolean is true
     @Query("SELECT EXISTS (SELECT * FROM plan_list WHERE Goals_Today_Boolean = 1 AND date = :date) ")

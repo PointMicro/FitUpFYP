@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".StatsFragment"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- First LinearLayout -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <View
+                android:id="@+id/steps_View1"
+                android:layout_width="154dp"
+                android:layout_height="131dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/rounded_corners" />
+
+            <View
+                android:id="@+id/commonWorkout_View"
+                android:layout_width="154dp"
+                android:layout_height="131dp"
+                android:layout_marginStart="64dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/rounded_corners" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <View
+                android:id="@+id/BMI_View"
+                android:layout_width="154dp"
+                android:layout_height="131dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="235dp"
+                android:background="@drawable/rounded_corners"/>
+
+            <View
+                android:id="@+id/misc_View"
+                android:layout_width="154dp"
+                android:layout_height="270dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginStart="235dp"
+                android:background="@drawable/rounded_corners" />
+
+            <View
+                android:id="@+id/survey_View"
+                android:layout_width="148dp"
+                android:layout_height="413dp"
+                android:layout_marginStart="22dp"
+                android:layout_marginTop="-425dp"
+                android:layout_marginBottom="95dp"
+                android:background="@drawable/rounded_corners" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

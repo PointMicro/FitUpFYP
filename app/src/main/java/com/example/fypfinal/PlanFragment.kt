@@ -2,6 +2,7 @@ package com.example.fypfinal
 
 import android.os.Bundle
 import android.util.Log
+import com.example.fypfinal.R
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.widget.CalendarView.OnDateChangeListener
@@ -10,12 +11,20 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.contains
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import kotlinx.coroutines.launch
 import org.w3c.dom.Text
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.Month
+import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.collections.*
+import kotlin.text.*
+import kotlin.io.*
+
 
 
 class PlanFragment : Fragment() {
@@ -30,29 +39,10 @@ class PlanFragment : Fragment() {
     lateinit var resetButton: Button
     lateinit var workoutSpinner: Spinner
     lateinit var stepsNum: EditText
-    var Date = ""
-    var formattedDate = ""
-    var hello = ""
-
-    //When you click this tab it opens up a Calendar view of the dates recorded on the calendar
-        //When you click a date. it brings up that dates info and has a box view under it labelled
-                // with "Goals" at the top of the view (im thinking dark grey green border
-            //
+    var calendar_selected_date: String = ""
 
 
 
-    //C_DB items
-        // doingGoalforThisDay - Boolean
-        // duration_goal -Int? that can be nullable [DURATION MAY NOT BE NEEDED]
-        // workout_goal - Int?
-        // steps_goal - Int?
-            //goals are null unless dgftd is true
-                //duration could be calculated automatically when selecting a workout
-
-
-    //Calendar here.
-        //Upon opening the homefragment
-            //It retrieves the fragment.
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,10 +52,25 @@ class PlanFragment : Fragment() {
 
     }
 
+    operator fun ClosedRange<LocalDate>.iterator() : Iterator<LocalDate>{
+        return object: Iterator<LocalDate> {
+            private var next = this@iterator.start
+            private val finalElement = this@iterator.endInclusive
+            private var hasNext = !next.isAfter(this@iterator.endInclusive)
 
-    //On click date
-        //An AlertDialog(?) or something bigger pops up
-            //Displays the info with Date as title
+            override fun hasNext(): Boolean = hasNext
+            override fun next(): LocalDate {
+                val value = next
+                if(value == finalElement) {
+                    hasNext = false
+                }
+                else {
+                    next = next.plusDays(1)
+                }
+                return value
+            }
+        }
+    }
 
 
 
@@ -96,17 +101,20 @@ class PlanFragment : Fragment() {
         steps_text= view.findViewById(R.id.sg_textview)
         duration_text = view.findViewById(R.id.duration_textview)
 
-
+        //By default its disabled
         resetButton.isEnabled = false
+        resetButton.visibility = View.INVISIBLE
+        workout_text.visibility = View.INVISIBLE
+        steps_text.visibility = View.INVISIBLE
+        duration_text.visibility = View.INVISIBLE
 
         val calendar_db = Room.databaseBuilder(requireContext(), CalendarDatabase::class.java, "calendar_db").build()
         val dao_access = calendar_db.calendarDao()
 
         // Set the initial date to db date
-        lifecycleScope.launch{
-            val firstDate = dao_access.getFirstRecordedDate()
-            val lastDate = dao_access.getLastRecordedDate()
-
+        lifecycleScope.launch {
+            var firstDate = dao_access.getFirstRecordedDate()
+            var lastDate = dao_access.getLastRecordedDate()
 
             val initialDate = dateStringToLong(firstDate)
             calendarView.date = initialDate
@@ -115,21 +123,58 @@ class PlanFragment : Fragment() {
             val maxDate = dateStringToLong(lastDate)
             calendarView.maxDate = maxDate
 
+            Log.d("Date String", "Start Date: " + firstDate + ", End Date: " + lastDate)
+            val plans = dao_access.getDatesWithSelectedGoals()
+            val startDate = LocalDate.parse(firstDate)
+            val endDate = LocalDate.parse(lastDate)
+            val dateRange = startDate..endDate
+
+            var currentDateFound = false
+            for(date in plans){
+                val planDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date) // parse date from the plans list into a Date object
+                if(planDate.toString() in firstDate..lastDate){
+                    currentDateFound = true
+                    break
+                }
+
+            }
+            if (currentDateFound){
+
+                goalButton.visibility = View.INVISIBLE
+                goalButton.isEnabled = false
+
+                //Text Views and Reset are visible
+                resetButton.isEnabled = true
+                resetButton.visibility = View.VISIBLE
+                workout_text.visibility = View.VISIBLE
+                steps_text.visibility = View.VISIBLE
+                duration_text.visibility = View.VISIBLE
+
+            }else{
+                goalButton.visibility = View.VISIBLE
+                goalButton.isEnabled = true
+
+                //Text Views and Reset are visible
+                resetButton.isEnabled = true
+                resetButton.visibility = View.INVISIBLE
+                workout_text.visibility = View.INVISIBLE
+                steps_text.visibility = View.INVISIBLE
+                duration_text.visibility = View.INVISIBLE
+
+            }
+
+
+
+            // Set appearance of currently selected date
+           // updateSelectedDateAppearance(calendar_selected_date, dao_access)
+
+            // Check again on date change
+            calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+                calendar_selected_date = "${year}-${(month + 1).toString().padStart(2, '0')}-${dayOfMonth.toString().padStart(2, '0')}"
+                //updateSelectedDateAppearance(calendar_selected_date, dao_access)
+            }
         }
 
-
-
-
-        // on below line we are adding set on
-        // date change listener for calendar view.
-        calendarView
-            .setOnDateChangeListener(
-                OnDateChangeListener { view, year, month, dayOfMonth ->
-
-                    Date = (dayOfMonth.toString()  + "-" +  (month + 1)  + "-" + year )
-                     formattedDate = "${year}-${(month + 1).toString().padStart(2, 
-                        '0')}-${dayOfMonth.toString().padStart(2, '0')}"
-                })
 
 
 
@@ -139,62 +184,49 @@ class PlanFragment : Fragment() {
             val inflater = LayoutInflater.from(requireContext())
             val dialogLayout = inflater.inflate(R.layout.goal, null)
 
-            builder.setView(dialogLayout)
-                .setPositiveButton("Confirm") { dialogInterface, i ->
+            workoutSpinner = dialogLayout.findViewById(R.id.workout_spinner)
+            stepsNum = dialogLayout.findViewById(R.id.steps_edittext)
+            val spinner2 = resources.getStringArray(R.array.Workout)
+
+            val options = listOf("Unselected", "Cardiovascular", "Strength", "Yoga")
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, options)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            workoutSpinner.adapter = adapter
+
+            builder.setView(dialogLayout).setPositiveButton("Confirm") { dialogInterface, i ->
                     // handle confirm button click
+
+
 
                     val calendar_db = Room.databaseBuilder(requireContext(),
                         CalendarDatabase::class.java, "calendar_db").build()
                     val dao_access = calendar_db.calendarDao()
 
 
-                    workoutSpinner = view.findViewById(R.id.workout_spinner)
-                    stepsNum = view.findViewById(R.id.steps_edittext)
-                    val spinner2 = resources.getStringArray(R.array.Workout)
 
-                    if(workoutSpinner != null){
-                        val adapter = ArrayAdapter(requireContext(),
-                            android.R.layout.simple_spinner_item, spinner2)
-                        workoutSpinner.adapter = adapter
-                    }
                     val selectedWorkout = workoutSpinner.selectedItem.toString()
-                    val enteredSteps = stepsNum.text.toString()
+                    var enteredSteps = stepsNum.text.toString()
                     // do something with selected workout and entered steps
 
-                    lifecycleScope.launch{
-                        //Makes the date remove add goal button
-                       // dao_access.updateGoalsSelected(Date)
-
-                        //Add the dates step count to db for that day
-                        //dao_access.updateStepGoal(Date, enteredSteps.toInt())
 
                         //Add the dates workout to db for that day
                         val workout_C = selectedWorkout == "Cardiovascular"
                         val workout_Y = selectedWorkout == "Yoga"
                         val workout_S = selectedWorkout == "Strength"
-                        Log.d("Date String", "Here: " + formattedDate)
-                        val plan = Plan(formattedDate, goals_selected = true, W_Y = workout_Y, W_S = workout_S, W_C = workout_C, enteredSteps.toInt() )
-                        dao_access.updateWorkoutBooleans(plan)
+                        Log.d("Date String", "Here: " + calendar_selected_date)
+                        if(enteredSteps.isNullOrEmpty() || enteredSteps.toInt() < 1){
+                            enteredSteps = "0"
+                        }
+                        val plan = Plan(calendar_selected_date, goals_selected = true, W_Y = workout_Y, W_S = workout_S, W_C = workout_C, enteredSteps.toInt() )
+                lifecycleScope.launch {  dao_access.insertFitnessPlan(plan) }
 
-                    }
-
-                    //"Add a goal" is disabled and invisible
-                    goalButton.visibility = View.INVISIBLE
-                    goalButton.isEnabled = false
-
-                    //Text Views and Reset are visible
-                    resetButton.isEnabled = true
-                    resetButton.visibility = View.VISIBLE
-                    workout_text.visibility = View.VISIBLE
-                    steps_text.visibility = View.VISIBLE
-                    duration_text.visibility = View.VISIBLE
 
                     //Set the text
-                    lifecycleScope.launch {
-                        val imported_workout = dao_access.getTrueSelection(formattedDate)
-                        workout_text.setText("Workout Goal: " + imported_workout)
+                lifecycleScope.launch {
+                       val imported_workout = dao_access.getTrueSelection(calendar_selected_date)
+                        workout_text.setText("Workout Goal: " + imported_workout) //is null for some reason
                         steps_text.setText("Steps Goal: " + enteredSteps.toInt())
-                    }
+                }
 
                 }
                 .setNegativeButton("Cancel") { dialogInterface, i ->
@@ -203,40 +235,62 @@ class PlanFragment : Fragment() {
             val alertDialog = builder.create()
             alertDialog.show()
 
-            //val isGoalsTodaySelected: Boolean = dao_access.isGoalTrue(formattedDate)
-
-           // val imported_steps = dao_access.getStepGoals(formattedDate)
 
 
+            }
         }
 
+    private fun updateSelectedDateAppearance(selectedDate: String, dao_access: CalendarDao2) {
+        lifecycleScope.launch {
+//            var firstDate = dao_access.getFirstRecordedDate()
+//            var lastDate = dao_access.getLastRecordedDate()
+        if (dao_access.isGoalTrue(selectedDate)) {
+//            val startDate = LocalDate.parse(firstDate)
+//            val endDate = LocalDate.parse(lastDate)
+//            val dateRange = startDate..endDate
+//            val plans = dao_access.getDatesWithSelectedGoals()
+//            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
+//            for (date in dateRange){
+//                val formattedDate = date.format(formatter)
 
+               // if(plans.contains(selectedDate) ){
 
-//to do
-        //Make the Calendar the correct date according to DB
-        //Conenct to DB
-                            //BELOW MAY CHANGE FOR  FIRST LAUNCH
-                            // Connects to the DB and sets the goal button visiblity according to the Boolean (for loop maybe)
-        //When you click add goal:
+                calendarView.dateTextAppearance = R.style.goal_selected
+                //"Add a goal" is disabled and invisible
+                goalButton.visibility = View.INVISIBLE
+                goalButton.isEnabled = false
 
-        //it changes the boolean and removes the Add goal button and makes an alertdialog popup
-                //the popup lets you change the details. Not changing it leaves it as unset.
+                //Text Views and Reset are visible
+                resetButton.isEnabled = true
+                resetButton.visibility = View.VISIBLE
+                workout_text.visibility = View.VISIBLE
+                steps_text.visibility = View.VISIBLE
+                duration_text.visibility = View.VISIBLE
+                } else {
+                    calendarView.dateTextAppearance = R.style.default_style
+                goalButton.visibility = View.INVISIBLE
+                goalButton.isEnabled = false
 
-                //No edit button, only reset and add
-
-
+                //Text Views and Reset are visible
+                resetButton.isEnabled = true
+                resetButton.visibility = View.VISIBLE
+                workout_text.visibility = View.VISIBLE
+                steps_text.visibility = View.VISIBLE
+                duration_text.visibility = View.VISIBLE
+                }
+           // }
+        }
     }
-
 
     fun dateStringToLong(dateString: String?): Long {
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val date = format.parse(dateString)
         return date?.time ?: 0
+        }
+
     }
 
 
 
 
-
-}

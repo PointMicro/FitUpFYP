@@ -227,12 +227,12 @@ class HomeFragment : Fragment(), SensorEventListener {
             val calendar_dao_access = calendar_DB.calendarDao()
 
 
-            /*Gets the current date and a year ahead from it
+            /*Gets the current date and 6 months ahead from it
             * Then adds the values to the database for the Calendar */
             val dateRaw = Date() //Today date
             val x = Calendar.getInstance()
-            x.add(Calendar.YEAR, 1)
-            val end_date = x.time //1 Year Later Date
+            x.add(Calendar.MONTH, 6)
+            val end_date = x.time //6 Month Later Date
             val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
 

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -25,7 +26,7 @@ class StartSplashActivity : AppCompatActivity() {
         inspir_text.text = randomText()
 
 
-        GlobalScope.launch(Dispatchers.Main) {
+        lifecycleScope.launch(Dispatchers.Main) {
             delay(3000L)
             val intent = Intent(this@StartSplashActivity, TermsServiceActivity::class.java)
             startActivity(intent)
