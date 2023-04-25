@@ -55,4 +55,10 @@ interface UserDao {
     @Query("SELECT CASE WHEN FG_Other = 1 THEN 'FG_Other' WHEN FG_WL = 1 THEN 'FG_WL' WHEN FG_MB = 1 THEN 'FG_MB' END AS Final_Value FROM users WHERE FG_Other = 1 OR FG_WL = 1 OR FG_MB = 1")
     suspend fun getTrueFitGoal(): String?
 
+    @Query("UPDATE users SET dark_mode = 1")
+    fun darkModeTrue()
+
+    @Query("UPDATE users SET dark_mode = 0")
+    fun darkmodeFalse()
+
 }

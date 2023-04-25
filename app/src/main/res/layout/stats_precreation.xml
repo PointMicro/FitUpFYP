@@ -4,71 +4,133 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".StatsFragment"
-    android:orientation="horizontal">
+    tools:context=".StatsFragment">
+
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <!-- First LinearLayout -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+        <FrameLayout
+            android:layout_width="154dp"
+            android:layout_height="131dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/rounded_corners">
 
-            <View
-                android:id="@+id/steps_View1"
-                android:layout_width="154dp"
-                android:layout_height="131dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/rounded_corners" />
+            <TextView
+                android:id="@+id/steps_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Steps View: "
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center" />
+        </FrameLayout>
 
-            <View
-                android:id="@+id/commonWorkout_View"
-                android:layout_width="154dp"
-                android:layout_height="131dp"
-                android:layout_marginStart="64dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/rounded_corners" />
+        <FrameLayout
+            android:layout_width="154dp"
+            android:layout_height="131dp"
+            android:layout_marginStart="64dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/rounded_corners">
 
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            <TextView
+                android:id="@+id/commonWorkout_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Common:"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center" />
 
-            <View
-                android:id="@+id/BMI_View"
-                android:layout_width="154dp"
-                android:layout_height="131dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginStart="235dp"
-                android:background="@drawable/rounded_corners"/>
 
-            <View
-                android:id="@+id/misc_View"
-                android:layout_width="154dp"
-                android:layout_height="270dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginEnd="40dp"
-                android:layout_marginStart="235dp"
-                android:background="@drawable/rounded_corners" />
 
-            <View
-                android:id="@+id/survey_View"
-                android:layout_width="148dp"
-                android:layout_height="413dp"
-                android:layout_marginStart="22dp"
-                android:layout_marginTop="-425dp"
-                android:layout_marginBottom="95dp"
-                android:background="@drawable/rounded_corners" />
-        </LinearLayout>
+        </FrameLayout>
+
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="-400dp"
+        android:layout_marginTop="12dp"
+        android:visibility="visible"
+        tools:visibility="visible">
+
+        <FrameLayout
+            android:id="@+id/misc_View"
+            android:layout_width="154dp"
+            android:layout_height="270dp"
+            android:layout_marginStart="245dp"
+            android:layout_marginTop="350dp"
+            android:layout_marginEnd="45dp"
+            android:background="@drawable/rounded_corners">
+
+            <TextView
+                android:id="@+id/misc_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Misc Options:"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center" />
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/BMI_View"
+            android:layout_width="154dp"
+            android:layout_height="131dp"
+            android:layout_marginStart="245dp"
+            android:layout_marginTop="170dp"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/rounded_corners">
+
+            <TextView
+                android:id="@+id/BMI_TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BMI:"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/survey_View"
+            android:layout_width="148dp"
+            android:layout_height="413dp"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="210dp"
+            android:layout_marginBottom="95dp"
+            android:background="@drawable/rounded_corners" >
+
+            <TextView
+                android:id="@+id/surveyTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|top"
+                android:text="Survey Options:"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+        </FrameLayout>
+
+    </FrameLayout>
+
 
 </LinearLayout>

@@ -14,7 +14,8 @@ data class User(
     @ColumnInfo(name = "injuries") val injuries: Boolean?,
     @ColumnInfo(name = "FG_Other") val FG_Other: Boolean?,
     @ColumnInfo(name = "FG_WL") val FG_WL: Boolean?,
-    @ColumnInfo(name = "FG_MB") val FG_MB: Boolean?
+    @ColumnInfo(name = "FG_MB") val FG_MB: Boolean?,
+    @ColumnInfo(name = "dark_mode") val darkMode: Boolean = false
 )
 
 @Entity
