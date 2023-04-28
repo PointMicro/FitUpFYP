@@ -15,8 +15,8 @@ interface CalendarDao2 {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSteps(steps: Steps)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCalories(calories: Calories)
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    suspend fun insertCalories(calories: Calories)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHeartRateRecordings(hrRecordings: List<HrRecordings>)
@@ -54,11 +54,14 @@ interface CalendarDao2 {
     @Query("SELECT * FROM hr_recordings WHERE date = :input")
     suspend fun getHeartRateRecordings(input: String): List<HrRecordings>
 
-    @Query("SELECT * FROM calories WHERE date = :input")
-    suspend fun getCaloriesBurned(input: String): Calories?
+    @Query("SELECT total_calories_burned FROM calendar WHERE date = :input")
+    suspend fun getCaloriesBurned(input: String): Int
 
     /* Increments total workouts and the car */
 
+
+    @Query("UPDATE calendar SET total_calories_burned = total_calories_burned + :caloriesToAdd WHERE date = :selectedDate")
+    suspend fun addCaloriesBurned(selectedDate: String, caloriesToAdd: Int)
     @Query("UPDATE calendar SET workouts_completed = workouts_completed + 1 WHERE date = :input")
     suspend fun incrementWorkoutsCompleted(input: String)
 

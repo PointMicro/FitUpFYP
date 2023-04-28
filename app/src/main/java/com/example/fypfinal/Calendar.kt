@@ -19,7 +19,7 @@ data class Calendar2(
     @ColumnInfo(name = "steps_taken")
     val stepsTaken: Int? = null,
     @ColumnInfo(name = "total_calories_burned")
-    val totalCaloriesBurned: Int? = null,
+    val totalCaloriesBurned: Int = 0,
     @ColumnInfo(name = "heart_rate_recordings")
     val heartRateRecordings: List<Int>? = null
 )
@@ -30,14 +30,6 @@ data class Steps(
     val date: String,
     @ColumnInfo(name = "steps_taken")
     val stepsTaken: Int?
-)
-
-@Entity(tableName = "calories")
-data class Calories(
-    @PrimaryKey
-    val date: String,
-    @ColumnInfo(name = "total_calories_burned")
-    val totalCaloriesBurned: Int?
 )
 
 @Entity(tableName = "hr_recordings")
@@ -51,34 +43,6 @@ data class HrRecordings(
 )
 
 
-
-//C_DB items
-// doingGoalforThisDay - Boolean
-// duration_goal -Int? that can be nullable [DURATION MAY NOT BE NEEDED]
-// workout_goal - Int?
-// steps_goal - Int?
-//goals are null unless doing goals for this day is true
-//duration could be calculated automatically when selecting a workout
-
-
-//@Entity(tableName = "plan_list")
-//data class Plan(
-//    @PrimaryKey
-//    val date: String,
-//    @ColumnInfo(name = "Goals_Today_Boolean")
-//    val goals_selected: Boolean = false, //Always false unless set true
-////    @ColumnInfo(name = "workout_goals")
-////    val workout_goal: String?,
-//
-//    @ColumnInfo(name = "Workout_Yoga")
-//    val W_Y: Boolean?,
-//    @ColumnInfo(name = "Workout_Strength")
-//    val W_S: Boolean?,
-//    @ColumnInfo(name = "Workout_Cardio")
-//    val W_C: Boolean?,
-//    @ColumnInfo(name = "steps_goals")
-//    val step_goal: Int?
-//)
 
 @Entity(tableName = "plan_list")
 data class Plan(
@@ -95,6 +59,15 @@ data class Plan(
     @ColumnInfo(name = "steps_goals")
     val steps_goals: Int?
 )
+
+
+//C_DB items
+// doingGoalforThisDay - Boolean
+// duration_goal -Int? that can be nullable [DURATION MAY NOT BE NEEDED]
+// workout_goal - Int?
+// steps_goal - Int?
+//goals are null unless doing goals for this day is true
+//duration could be calculated automatically when selecting a workout
 
 
 

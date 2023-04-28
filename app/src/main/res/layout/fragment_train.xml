@@ -1,15 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".TrainFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|top"
-        android:text="Training Fragment"
-        android:textSize="26dp" />
+    <!-- Template using contraintlayout to see how it would look since Axure expired-->
 
-</FrameLayout>
+
+    <!-- Video View could be proper form for workouts. -->
+    <!-- You could select your training and the video changes accordingly in the carousel eg. 3 vids for yoga, 2 vids for cardio etc -->
+    <!-- Needs to increment the workouts-->
+    <!-- Needs buttons as well-->
+
+
+    <FrameLayout
+        android:id="@+id/tipsView"
+        android:layout_width="168dp"
+        android:layout_height="147dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/rounded_corners"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tips_TY"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="TIP:"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/frame_VIEW1"
+        android:layout_width="381dp"
+        android:layout_height="127dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="109dp"
+        android:background="@drawable/rounded_corners"
+        app:layout_constraintBottom_toTopOf="@+id/video_carousel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <Button
+            android:id="@+id/startwko_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="16dp"
+            android:text="Start"
+            app:layout_constraintStart_toStartOf="@id/frame_VIEW1"
+            app:layout_constraintTop_toBottomOf="@id/yoga_button" />
+
+        <Button
+            android:id="@+id/yoga_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="28dp"
+            android:text="Yoga"
+            android:enabled="false"
+            app:layout_constraintStart_toStartOf="@id/frame_VIEW1"
+            app:layout_constraintTop_toTopOf="@id/frame_VIEW1" />
+
+        <Button
+            android:id="@+id/strength_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:text="Stre"
+            android:enabled="false"
+            app:layout_constraintStart_toEndOf="@id/yoga_button"
+            app:layout_constraintTop_toTopOf="@id/frame_VIEW1" />
+
+        <Button
+            android:id="@+id/cardio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:text="Card"
+            android:enabled="false"
+            app:layout_constraintStart_toEndOf="@id/strength_button"
+            app:layout_constraintTop_toTopOf="@id/frame_VIEW1" />
+
+        <Button
+            android:id="@+id/complete_button"
+            android:layout_width="205dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="44dp"
+            android:layout_marginBottom="17dp"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:text="Mark as Complete"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/frame_VIEW1" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.smarteist.autoimageslider.SliderView
+        android:id="@+id/video_carousel"
+        android:layout_width="315dp"
+        android:layout_height="162dp"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="327dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="77dp"
+        android:background="@drawable/photo"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:sliderAnimationDuration="600"
+        app:sliderAutoCycleDirection="back_and_forth"
+        app:sliderIndicatorAnimationDuration="600"
+        app:sliderIndicatorEnabled="true"
+        app:sliderIndicatorGravity="center_horizontal|bottom"
+        app:sliderIndicatorMargin="15dp"
+        app:sliderIndicatorOrientation="horizontal"
+        app:sliderIndicatorPadding="3dp"
+        app:sliderIndicatorRadius="2dp"
+        app:sliderIndicatorSelectedColor="#5A5A5A"
+        app:sliderIndicatorUnselectedColor="#FFF"
+        app:sliderScrollTimeInSec="1"/>
+
+    <FrameLayout
+        android:id="@+id/caloriesView"
+        android:layout_width="168dp"
+        android:layout_height="147dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="19dp"
+        android:background="@drawable/rounded_corners"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/calories_TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Calories Burned: (30 min estimation):"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

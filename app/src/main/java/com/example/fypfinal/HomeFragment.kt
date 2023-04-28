@@ -1,5 +1,6 @@
 package com.example.fypfinal
 
+import SliderAdapter
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -10,8 +11,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -20,10 +19,9 @@ import com.example.fypfinal.databinding.ActivityHomeBinding
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar
-import android.content.Intent
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.*
 import androidx.lifecycle.lifecycleScope
+import com.smarteist.autoimageslider.SliderView
 import kotlinx.coroutines.launch
 
 
@@ -54,6 +52,26 @@ class HomeFragment : Fragment(), SensorEventListener {
     /*Binding*/
     private lateinit var binding : ActivityHomeBinding
 
+    /* Carousel stuff */
+
+    // on below line we are creating a variable
+    // for our array list for storing our images.
+    lateinit var imageUrl: ArrayList<Int>
+
+    // on below line we are creating
+    // a variable for our slider view.
+    lateinit var sliderView: SliderView
+
+    // on below line we are creating
+    // a variable for our slider adapter.
+    lateinit var sliderAdapter: SliderAdapter
+
+
+
+    lateinit var videoView: VideoView
+
+
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -66,9 +84,8 @@ class HomeFragment : Fragment(), SensorEventListener {
 
 
 
-
     }
-
+//Weather section. Use photosvhop to make pictures depending on the weather
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -92,6 +109,44 @@ class HomeFragment : Fragment(), SensorEventListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+//talk abouyt how it was a vid to gif to vid
+
+        sliderView = view.findViewById(R.id.news_section)
+
+
+
+        // on below line we are initializing
+        // our image url array list.
+        imageUrl = ArrayList()
+      //  imageUrl.add(R.raw.vid)
+       // imageUrl.add("https://media.geeksforgeeks.org/wp-content/uploads/20201217192146/Screenrecorder-2020-12-17-19-17-36-828.mp4?_=1")
+       // imageUrl.add(R.raw.vidtwo)
+
+
+
+        // on below line we are initializing our
+        // slider adapter and adding our list to it.
+        sliderAdapter = SliderAdapter( imageUrl)
+
+        // on below line we are setting auto cycle direction
+        // for our slider view from left to right.
+        sliderView.autoCycleDirection = SliderView.LAYOUT_DIRECTION_LTR
+
+        // on below line we are setting adapter for our slider.
+        sliderView.setSliderAdapter(sliderAdapter)
+
+        // on below line we are setting scroll time
+        // in seconds for our slider view.
+        sliderView.scrollTimeInSec = 3
+
+        // on below line we are setting auto cycle
+        // to true to auto slide our items.
+        sliderView.isAutoCycle = false
+
+        // on below line we are calling start
+        // auto cycle to start our cycle.
+        //sliderView.startAutoCycle()
+
 
 
         hr_button = view.findViewById(com.example.fypfinal.R.id.HRM_Button)
@@ -148,18 +203,12 @@ class HomeFragment : Fragment(), SensorEventListener {
             val currentSteps = current.toInt() - previous.toInt()
             todayCountDisplay.text = currentSteps.toString()
 
-
-
             // Debug logging statements
             Log.d("StepCounter", "Received sensor data: ${event.values[0]}")
             Log.d("StepCounter", "Previous step count: $previous")
             Log.d("StepCounter", "Current step count: $current")
             Log.d("StepCounter", "Current step count delta: $currentSteps")
         }
-
-
-
-
 
     }
 
@@ -227,9 +276,9 @@ class HomeFragment : Fragment(), SensorEventListener {
             val calendar_dao_access = calendar_DB.calendarDao()
 
 
-            /*Gets the current date and 6 months ahead from it
+            /*Gets the set date and 6 months ahead from it
             * Then adds the values to the database for the Calendar */
-            val dateRaw = Date() //Today date
+            val dateRaw = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse("2023-04-01")
             val x = Calendar.getInstance()
             x.add(Calendar.MONTH, 6)
             val end_date = x.time //6 Month Later Date
@@ -254,12 +303,12 @@ class HomeFragment : Fragment(), SensorEventListener {
 
     }
 
-
-    /* Uses the current date and adds 1 year to it */
-//    private fun yearAhead(date: Date): Date{
-//        val c = Calendar.getInstance()
-//        c.add(Calendar.YEAR, 1)
-//        return c.time
+//    fun weatherTemp(){
+//        val queue = Volley.newRequestQueue(this)
+//        val url: String = weather_url1
+//
+//
+//
 //    }
 
 

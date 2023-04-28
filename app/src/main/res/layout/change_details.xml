@@ -16,25 +16,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.851" />
 
-    <TextView
-        android:id="@+id/inj_error"
-        android:layout_width="210dp"
-        android:layout_height="22dp"
-        android:text="Injury Error"
-        android:visibility="invisible"
-        android:textColor="@color/red"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.86"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/injSpinner" />
-
 
     <EditText
         android:id="@+id/editWeight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="number"
+        android:inputType="textPersonName"
         android:hint="Weight"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +37,6 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Height"
-        android:inputType="number"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.835"
@@ -81,25 +68,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editHeight" />
 
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="149dp"
-        android:layout_height="45dp"
-        android:text="Submit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.435"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
-
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="In order for us to continue we'd like you to enter some details"
+        android:text="LEAVE ANY DETAILS YOU WANT UNCHANGED BLANK\n (YOU CAN ALSO SET THE
+SPINNERS TO 'UNCHANGED')"
         android:textStyle="bold"
+        android:textColor="@color/red"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -213,17 +189,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.093" />
 
-    <TextView
-        android:id="@+id/name_error"
-        android:layout_width="210dp"
-        android:layout_height="22dp"
-        android:text="Name Error"
-        android:visibility="invisible"
-        android:textColor="@color/red"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.86"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editName" />
 
     <EditText
         android:id="@+id/editAge"
@@ -231,7 +196,6 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Age"
-        android:inputType="number"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.85"
@@ -262,18 +226,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.324" />
 
-    <TextView
-        android:id="@+id/gender_error"
-        android:layout_width="210dp"
-        android:layout_height="22dp"
-        android:text="Gender Error"
-        android:visibility="invisible"
-        android:textColor="@color/red"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.86"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/genderSpinner" />
-
     <Spinner
         android:id="@+id/fgSpinner"
         android:layout_width="212dp"
@@ -284,16 +236,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.732" />
-    <TextView
-        android:id="@+id/fg_error"
-        android:layout_width="210dp"
-        android:layout_height="22dp"
-        android:text="FG Error"
-        android:visibility="invisible"
-        android:textColor="@color/red"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.86"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fgSpinner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -42,11 +42,11 @@
         android:id="@+id/imageView3"
         android:layout_width="161dp"
         android:layout_height="126dp"
-        tools:src="@drawable/_52721"
+        tools:src="@drawable/icon_52721"
         android:layout_gravity="top|center"/>
 
     <Button
-        android:id="@+id/details_button"
+        android:id="@+id/detailsButton"
         android:layout_width="100dp"
         android:text="Change details"
         android:layout_height="wrap_content"
@@ -63,7 +63,6 @@
         android:layout_marginTop="475dp"
         android:backgroundTint="@color/dark_red"
         android:text="DELETE ACCOUNT" />
-
 
 
 

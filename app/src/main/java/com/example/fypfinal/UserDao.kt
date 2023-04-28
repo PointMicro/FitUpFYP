@@ -44,8 +44,8 @@ interface UserDao {
     @Insert
     suspend fun insertInjuries(user: User)
 
-    @Query("SELECT injuries FROM users")
-    suspend fun getInjury(): Boolean?
+    @Query("SELECT CASE WHEN injuries = 1 THEN 'YES' WHEN injuries = 0 THEN 'NO' END AS Injury_Value FROM users")
+    suspend fun getInjury(): String?
 
     // Insert fitness goal data
     @Insert(onConflict = OnConflictStrategy.REPLACE)

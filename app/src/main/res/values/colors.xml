@@ -10,4 +10,6 @@
     <color name="red">#FF0000</color>
     <color name="grey">#808080</color>
     <color name="dark_red">#A52A2A</color>
+    <color name="dark_yellow">#FFA500 </color>
+
 </resources>
