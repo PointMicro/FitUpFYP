@@ -1,30 +1,28 @@
 package com.example.fypfinal
 
+import android.graphics.Color
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.util.Log
-import com.example.fypfinal.R
 import android.view.LayoutInflater
-import androidx.fragment.app.Fragment
-import android.widget.CalendarView.OnDateChangeListener
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.contains
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.room.Room
+import androidx.room.Room.databaseBuilder
+import com.github.sundeepk.compactcalendarview.CompactCalendarView
+import com.github.sundeepk.compactcalendarview.domain.Event
 import kotlinx.coroutines.launch
-import org.w3c.dom.Text
+import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.Month
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.*
-import kotlin.text.*
 import kotlin.io.*
-
+import kotlin.text.*
 
 
 class PlanFragment : Fragment() {
@@ -35,55 +33,38 @@ class PlanFragment : Fragment() {
     lateinit var goalButton: Button
     lateinit var workout_text: TextView
     lateinit var steps_text: TextView
-    lateinit var duration_text: TextView
     lateinit var resetButton: Button
     lateinit var workoutSpinner: Spinner
     lateinit var stepsNum: EditText
-    var calendar_selected_date: String = ""
-
+    private val eventMap = mutableMapOf<String, String>()
+    lateinit var  compactCalendarView: CompactCalendarView
+    lateinit var monthTextView: TextView
+    lateinit var goal_step_text: TextView
+    lateinit var goal_wko_text: TextView
 
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
-
     }
-
-    operator fun ClosedRange<LocalDate>.iterator() : Iterator<LocalDate>{
-        return object: Iterator<LocalDate> {
-            private var next = this@iterator.start
-            private val finalElement = this@iterator.endInclusive
-            private var hasNext = !next.isAfter(this@iterator.endInclusive)
-
-            override fun hasNext(): Boolean = hasNext
-            override fun next(): LocalDate {
-                val value = next
-                if(value == finalElement) {
-                    hasNext = false
-                }
-                else {
-                    next = next.plusDays(1)
-                }
-                return value
-            }
-        }
-    }
-
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_plan, container, false) as ViewGroup
+        val rootView = inflater.inflate(R.layout.calendar_new, container, false) as ViewGroup
 
         // Inflate the second layout file and add its views to the first layout
         val additionalLayout = inflater.inflate(R.layout.goal, container, false)
         rootView.addView(additionalLayout)
+
+        goalButton = rootView.findViewById(R.id.addGoalButton)
+        resetButton = rootView.findViewById(R.id.resetbutton)
+        workout_text = rootView.findViewById(R.id.wkg_textview)
+        steps_text= rootView.findViewById(R.id.sg_textview)
+         compactCalendarView = rootView.findViewById(R.id.compactcalendar_view)
+        monthTextView = rootView.findViewById(R.id.idTVDate)
 
         return rootView}
 
@@ -91,114 +72,174 @@ class PlanFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        // initializing variables of
-        // list view with their ids.
-        dateTV = view.findViewById(R.id.idTVDate)
-        calendarView = view.findViewById(R.id.calendarView)
-        goalButton = view.findViewById(R.id.addGoalButton)
-        resetButton = view.findViewById(R.id.resetbutton)
-        workout_text = view.findViewById(R.id.wkg_textview)
-        steps_text= view.findViewById(R.id.sg_textview)
-        duration_text = view.findViewById(R.id.duration_textview)
+
+        val currentMonth = DateFormatSymbols().months[Calendar.getInstance().get(Calendar.MONTH)]
+        monthTextView.text = currentMonth
 
         //By default its disabled
         resetButton.isEnabled = false
         resetButton.visibility = View.INVISIBLE
         workout_text.visibility = View.INVISIBLE
         steps_text.visibility = View.INVISIBLE
-        duration_text.visibility = View.INVISIBLE
 
-        val calendar_db = Room.databaseBuilder(requireContext(), CalendarDatabase::class.java, "calendar_db").build()
-        val dao_access = calendar_db.calendarDao()
 
-        // Set the initial date to db date
-        lifecycleScope.launch {
-            var firstDate = dao_access.getFirstRecordedDate()
-            var lastDate = dao_access.getLastRecordedDate()
 
-            val initialDate = dateStringToLong(firstDate)
-            calendarView.date = initialDate
 
-            // Set the maximum date to one year from the initial date
-            val maxDate = dateStringToLong(lastDate)
-            calendarView.maxDate = maxDate
+//Need to amke it show year
 
-            Log.d("Date String", "Start Date: " + firstDate + ", End Date: " + lastDate)
-            val plans = dao_access.getDatesWithSelectedGoals()
-            val startDate = LocalDate.parse(firstDate)
-            val endDate = LocalDate.parse(lastDate)
-            val dateRange = startDate..endDate
+        val calendar_db = databaseBuilder(requireContext(), CalendarDatabase::class.java, "calendar_db").build()
+        val dao_access_calendar = calendar_db.calendarDao()
 
-            var currentDateFound = false
-            for(date in plans){
-                val planDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date) // parse date from the plans list into a Date object
-                if(planDate.toString() in firstDate..lastDate){
-                    currentDateFound = true
-                    break
+
+        /*
+        Add database dates to list
+         */
+        val dateRaw = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse("2023-04-01")
+        val x = Calendar.getInstance()
+        x.add(Calendar.MONTH, 6)
+        val end_date = x.time //6 Month Later Date
+        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val date_lists = mutableListOf<String>()
+        var date_tracked = dateRaw
+
+        while (date_tracked.before(end_date)) {
+            val start_date = formatter.format(date_tracked)
+            date_lists.add(start_date)
+            x.add(Calendar.DAY_OF_MONTH, 1)
+            date_tracked = x.time
+        }
+
+
+        /*
+        Add database dates as millis to list
+         */
+        val calendar_m = Calendar.getInstance()
+        calendar_m.set(2023, Calendar.APRIL, 1) // Set the starting date to April 1st, 2023
+        val timeInMillis = calendar_m.timeInMillis // Get the time in millis for the starting date
+        val dates = mutableListOf<Long>() // Create an empty list to hold the dates
+
+        for (i in 1..6) { // Loop over the next 6 months
+            calendar_m.add(Calendar.MONTH, 1) // Add 1 month to the current date
+            val dateInMillis = calendar_m.timeInMillis // Get the time in millis for the current date
+            dates.add(dateInMillis) // Add the current date to the list
+        }
+
+        var clickedDate: Date? = null
+
+        // Set a listener for when a date is clicked
+        compactCalendarView.setListener(object : CompactCalendarView.CompactCalendarViewListener {
+            override fun onDayClick(dateClicked: Date?) {
+                lifecycleScope.launch {
+                clickedDate = dateClicked
+
+
+                val convertedEE = formatDateEE(dateClicked) //dateclicked in yyyy-MM-dd format
+                if(dao_access_calendar.isGoalTrue(convertedEE)){
+
+                    goalButton.isEnabled = false
+                    goalButton.visibility = View.INVISIBLE
+                    resetButton.isEnabled = true
+                    resetButton.visibility = View.VISIBLE
+                    workout_text.visibility = View.VISIBLE
+                    steps_text.visibility = View.VISIBLE
+
+                    val inputDateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'Z yyyy", Locale.UK)
+                    val date = inputDateFormat.parse(dateClicked.toString())
+                    val timeInMillis = date.time
+
+                    val eventData = dao_access_calendar.getTrueSelection(convertedEE) + ":" + dao_access_calendar.getStepGoals(convertedEE).toString() //fix getworkoutgoals
+                    val workout = eventData.split(":")[0]
+                    val steps = eventData.split(":")[1].toInt()
+                    compactCalendarView.addEvent(Event(Color.BLUE,timeInMillis,workout + " "+ steps.toString()))
+
+                    workout_text.text = "Workout Goal: " + workout
+                    steps_text.text = "Steps for the day: " + steps.toString()
+
+                }
+
+
+                }
+
+
+                //its in millis string format
+                val events = compactCalendarView.getEvents(dateClicked)
+                if (events.isNotEmpty()) {
+                    val eventNames = events.map { it.data as String }
+                    val value = dateClicked
+                    val message = "Events for ${dateClicked}: ${eventNames.joinToString(", ")}"
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+
+                    //Show the views and stuff
+                    goalButton.visibility = View.INVISIBLE
+                    goalButton.isEnabled = false
+
+                    //Text Views and Reset are visible
+                    resetButton.isEnabled = true
+                    resetButton.visibility = View.VISIBLE
+                    workout_text.visibility = View.VISIBLE
+                    steps_text.visibility = View.VISIBLE
+
+                } else {
+                        //dateClicked is EEE MMM dd HH:mm:ss 'GMT'Z yyyy
+                    Toast.makeText(requireContext(), "No events for ${dateClicked}", Toast.LENGTH_SHORT).show()
+                    //Keep it the same
+                    goalButton.visibility = View.VISIBLE
+                    goalButton.isEnabled = true
+
+                    //Text Views and Reset are visible
+                    resetButton.isEnabled = false
+                    resetButton.visibility = View.INVISIBLE
+                    workout_text.visibility = View.INVISIBLE
+                    steps_text.visibility = View.INVISIBLE
                 }
 
             }
-            if (currentDateFound){
 
-                goalButton.visibility = View.INVISIBLE
-                goalButton.isEnabled = false
-
-                //Text Views and Reset are visible
-                resetButton.isEnabled = true
-                resetButton.visibility = View.VISIBLE
-                workout_text.visibility = View.VISIBLE
-                steps_text.visibility = View.VISIBLE
-                duration_text.visibility = View.VISIBLE
-
-            }else{
-                goalButton.visibility = View.VISIBLE
-                goalButton.isEnabled = true
-
-                //Text Views and Reset are visible
-                resetButton.isEnabled = true
-                resetButton.visibility = View.INVISIBLE
-                workout_text.visibility = View.INVISIBLE
-                steps_text.visibility = View.INVISIBLE
-                duration_text.visibility = View.INVISIBLE
-
+            override fun onMonthScroll(firstDayOfNewMonth: Date?) {
+                val currentMonth = DateFormatSymbols().months[compactCalendarView.firstDayOfCurrentMonth.month]
+                monthTextView.text = currentMonth
             }
-
-
-
-            // Set appearance of currently selected date
-           // updateSelectedDateAppearance(calendar_selected_date, dao_access)
-
-            // Check again on date change
-            calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
-                calendar_selected_date = "${year}-${(month + 1).toString().padStart(2, '0')}-${dayOfMonth.toString().padStart(2, '0')}"
-                //updateSelectedDateAppearance(calendar_selected_date, dao_access)
-            }
-        }
-
+        })
 
 
 
         goalButton.setOnClickListener {
 
-            val builder = AlertDialog.Builder(requireContext())
-            val inflater = LayoutInflater.from(requireContext())
-            val dialogLayout = inflater.inflate(R.layout.goal, null)
+            clickedDate?.let { date ->
+                // Use the date here
+                //val inputDateString = "Fri Apr 28 00:00:00 GMT+-1:00 2023"
+                val inputDateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'Z yyyy", Locale.US)
+                val date2 = inputDateFormat.parse(date.toString())
+                val timeInMillis = date2.time //clickedDate in millis
 
-            workoutSpinner = dialogLayout.findViewById(R.id.workout_spinner)
-            stepsNum = dialogLayout.findViewById(R.id.steps_edittext)
-            val spinner2 = resources.getStringArray(R.array.Workout)
-
-            val options = listOf("Unselected", "Cardiovascular", "Strength", "Yoga")
-            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, options)
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            workoutSpinner.adapter = adapter
-
-            builder.setView(dialogLayout).setPositiveButton("Confirm") { dialogInterface, i ->
-                    // handle confirm button click
+                val convertedgoalEE = formatDateEE(date) //clicked date in yyyy-MM-dd format
 
 
 
-                    val calendar_db = Room.databaseBuilder(requireContext(),
+                val builder = AlertDialog.Builder(requireContext())
+                val inflater = LayoutInflater.from(requireContext())
+                val dialogLayout = inflater.inflate(R.layout.goal, null)
+
+                workoutSpinner = dialogLayout.findViewById(R.id.workout_spinner)
+                stepsNum = dialogLayout.findViewById(R.id.steps_edittext)
+                goal_step_text = dialogLayout.findViewById(R.id.steps_textview)
+                goal_wko_text = dialogLayout.findViewById(R.id.workout_textview)
+
+
+                val options = listOf("Unselected", "Cardiovascular", "Strength", "Yoga")
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, options)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                workoutSpinner.adapter = adapter
+
+                builder.setView(dialogLayout).setPositiveButton("Confirm") { dialogInterface, i ->
+
+                    goal_wko_text.visibility = View.VISIBLE
+                    goal_step_text.visibility = View.VISIBLE
+                    workoutSpinner.visibility = View.VISIBLE
+                    stepsNum.visibility = View.VISIBLE
+
+
+                    val calendar_db = databaseBuilder(requireContext(),
                         CalendarDatabase::class.java, "calendar_db").build()
                     val dao_access = calendar_db.calendarDao()
 
@@ -209,88 +250,74 @@ class PlanFragment : Fragment() {
                     // do something with selected workout and entered steps
 
 
-                        //Add the dates workout to db for that day
-                        val workout_C = selectedWorkout == "Cardiovascular"
-                        val workout_Y = selectedWorkout == "Yoga"
-                        val workout_S = selectedWorkout == "Strength"
-                        Log.d("Date String", "Here: " + calendar_selected_date)
-                        if(enteredSteps.isNullOrEmpty() || enteredSteps.toInt() < 1){
-                            enteredSteps = "0"
-                        }
-                        val plan = Plan(calendar_selected_date, goals_selected = true, W_Y = workout_Y, W_S = workout_S, W_C = workout_C, enteredSteps.toInt() )
-                lifecycleScope.launch {  dao_access.insertFitnessPlan(plan) }
+                    //Add the dates workout to db for that day
+                    val workout_C = selectedWorkout == "Cardiovascular"
+                    val workout_Y = selectedWorkout == "Yoga"
+                    val workout_S = selectedWorkout == "Strength"
+                    Log.d("Date String", "Here: " + convertedgoalEE)
+                    if(enteredSteps.isNullOrEmpty() || enteredSteps.toInt() < 1){
+                        enteredSteps = "0"
+                    }
+                    val plan = Plan(convertedgoalEE, goals_selected = true, W_Y = workout_Y, W_S = workout_S, W_C = workout_C, enteredSteps.toInt() )
+                    lifecycleScope.launch {  dao_access.insertFitnessPlan(plan) }
 
 
                     //Set the text
-                lifecycleScope.launch {
-                       val imported_workout = dao_access.getTrueSelection(calendar_selected_date)
+                    lifecycleScope.launch {
+                        val imported_workout = dao_access.getTrueSelection(convertedgoalEE)
                         workout_text.setText("Workout Goal: " + imported_workout) //is null for some reason
                         steps_text.setText("Steps Goal: " + enteredSteps.toInt())
-                }
+                    }
+                    lifecycleScope.launch {
+
+                        val ed1 = dao_access_calendar.getTrueSelection(convertedgoalEE)
+                        val ed2 = dao_access_calendar.getStepGoals(convertedgoalEE).toString()
+                        if(ed2 == "null"){
+                            ed2 == "0"
+                        }
+                        val eventData = ed1 + ":" + ed2
+                        val workout = eventData.split(":")[0]
+                        val steps = eventData.split(":")[1].toInt()
+                        compactCalendarView.addEvent(Event(Color.BLUE,timeInMillis,workout + " "+ steps.toString()))
+                        goalButton.isEnabled = false
+                        goalButton.visibility = View.INVISIBLE
+                        resetButton.isEnabled = true
+                        resetButton.visibility = View.VISIBLE
+                        workout_text.visibility = View.VISIBLE
+                        steps_text.visibility = View.VISIBLE
+
+                        workout_text.text = "Workout Goal: " + workout
+                        steps_text.text = "Steps Goal: " + steps.toString()
+
+
+                    }
+                    goal_wko_text.visibility = View.INVISIBLE
+                    goal_step_text.visibility = View.INVISIBLE
+                    workoutSpinner.visibility = View.INVISIBLE
+                    stepsNum.visibility = View.INVISIBLE
+
+
 
                 }
-                .setNegativeButton("Cancel") { dialogInterface, i ->
-                    // handle cancel button click
-                }
-            val alertDialog = builder.create()
-            alertDialog.show()
-
+                    .setNegativeButton("Cancel") { dialogInterface, i ->
+                        // handle cancel button click
+                    }
+                val alertDialog = builder.create()
+                alertDialog.show()
 
 
             }
-        }
 
-    private fun updateSelectedDateAppearance(selectedDate: String, dao_access: CalendarDao2) {
-        lifecycleScope.launch {
-//            var firstDate = dao_access.getFirstRecordedDate()
-//            var lastDate = dao_access.getLastRecordedDate()
-        if (dao_access.isGoalTrue(selectedDate)) {
-//            val startDate = LocalDate.parse(firstDate)
-//            val endDate = LocalDate.parse(lastDate)
-//            val dateRange = startDate..endDate
-//            val plans = dao_access.getDatesWithSelectedGoals()
-//            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
-//            for (date in dateRange){
-//                val formattedDate = date.format(formatter)
-
-               // if(plans.contains(selectedDate) ){
-
-                calendarView.dateTextAppearance = R.style.goal_selected
-                //"Add a goal" is disabled and invisible
-                goalButton.visibility = View.INVISIBLE
-                goalButton.isEnabled = false
-
-                //Text Views and Reset are visible
-                resetButton.isEnabled = true
-                resetButton.visibility = View.VISIBLE
-                workout_text.visibility = View.VISIBLE
-                steps_text.visibility = View.VISIBLE
-                duration_text.visibility = View.VISIBLE
-                } else {
-                    calendarView.dateTextAppearance = R.style.default_style
-                goalButton.visibility = View.INVISIBLE
-                goalButton.isEnabled = false
-
-                //Text Views and Reset are visible
-                resetButton.isEnabled = true
-                resetButton.visibility = View.VISIBLE
-                workout_text.visibility = View.VISIBLE
-                steps_text.visibility = View.VISIBLE
-                duration_text.visibility = View.VISIBLE
-                }
-           // }
         }
     }
+    fun formatDateEE(inputDateString: Date?): String {
+        val inputDateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'Z yyyy", Locale.US)
+        val outputDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
-    fun dateStringToLong(dateString: String?): Long {
-        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val date = format.parse(dateString)
-        return date?.time ?: 0
-        }
-
+        val date = inputDateFormat.parse(inputDateString.toString())
+        return outputDateFormat.format(date)
     }
 
 
-
-
+}

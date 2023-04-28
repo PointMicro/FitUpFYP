@@ -1,0 +1,3 @@
+<declare-styleable name="CompactCalendarView">
+    <attr name="compactCalendarEvent" format="reference"/>
+</declare-styleable>

@@ -45,6 +45,11 @@ interface CalendarDao2 {
     @Query("SELECT steps_goals FROM plan_list WHERE date = :date")
     suspend fun getStepGoals(date: String): Int?
 
+
+//    @Query("SELECT workout_goals FROM plan_list WHERE date = :input")
+//    suspend fun getWorkoutGoals(input: String): String?
+//
+
     @Query("SELECT date FROM calendar WHERE date = :input")
     suspend fun getCurrDate(input: String): String?
 
@@ -120,10 +125,9 @@ interface CalendarDao2 {
     suspend fun updateWorkoutBooleans(plan: Plan)
 
 
+
+
+
 }
 
-
-
-//    @Query("SELECT date, workout_goals FROM plan_list WHERE date = :input")
-//    suspend fun getWorkoutGoals(input: String): Plan?
 
