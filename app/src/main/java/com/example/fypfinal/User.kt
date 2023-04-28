@@ -22,21 +22,3 @@ data class User(
 data class FitGoal(
     @PrimaryKey val finalValue: String
 )
-
-
-
-//Items recorded in User survey
-//Name
-//Age
-//Gender
-//Weight
-//Height
-//BMI will be calculated from the Height and Weight
-//Injuries - Boolean
-//Fitness Goal - Weight Loss
-
-
-//OPTIONAL STUFF IF I HAVE ENOUGH TIME
-//Birthday
-//Phone Number
-//Email

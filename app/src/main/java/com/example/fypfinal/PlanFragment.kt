@@ -2,7 +2,6 @@ package com.example.fypfinal
 
 import android.graphics.Color
 import android.os.Bundle
-import android.text.format.DateFormat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,19 +16,14 @@ import com.github.sundeepk.compactcalendarview.domain.Event
 import kotlinx.coroutines.launch
 import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.*
-import kotlin.io.*
 import kotlin.text.*
 
 
 class PlanFragment : Fragment() {
 
 
-    lateinit var dateTV: TextView
-    lateinit var calendarView: CalendarView
     lateinit var goalButton: Button
     lateinit var workout_text: TextView
     lateinit var steps_text: TextView

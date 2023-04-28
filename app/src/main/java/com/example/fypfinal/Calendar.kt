@@ -59,38 +59,3 @@ data class Plan(
     @ColumnInfo(name = "steps_goals")
     val steps_goals: Int?
 )
-
-
-//C_DB items
-// doingGoalforThisDay - Boolean
-// duration_goal -Int? that can be nullable [DURATION MAY NOT BE NEEDED]
-// workout_goal - Int?
-// steps_goal - Int?
-//goals are null unless doing goals for this day is true
-//duration could be calculated automatically when selecting a workout
-
-
-
-//Calendar
-    //When you pick a date it should display:
-            //[Add a Goal] if Unselected
-
-                //Add a Goal is replaced with
-                    //Workout Goal: [Workout type here or UNSET]
-                    //Duration: [Estimated to whatever exercises were selected]
-                    //Steps Goal: [Either a number or UNSET]
-
-                //Date with a goal set is highlighted
-//CHECK PAINT FILES
-
-
-
-//TALK ABOUT CUT DEV ABILITIES (HOW I LIMTIED THE CALENDAR PAGE - WORKOUT FROM 2 TO 1)
-
-//Date could be a string
-
-
-//Make a for loop where it goes through all dates from march 2023 to december 2024
-    //converts all of the dates to string
-    //converts it back if it wants to check
-
