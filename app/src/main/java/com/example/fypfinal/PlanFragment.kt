@@ -50,8 +50,8 @@ class PlanFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.calendar_new, container, false) as ViewGroup
 
         // Inflate the second layout file and add its views to the first layout
-        val additionalLayout = inflater.inflate(R.layout.goal, container, false)
-        rootView.addView(additionalLayout)
+//        val additionalLayout = inflater.inflate(R.layout.goal, container, false)
+//        rootView.addView(additionalLayout)
 
         goalButton = rootView.findViewById(R.id.addGoalButton)
         resetButton = rootView.findViewById(R.id.resetbutton)

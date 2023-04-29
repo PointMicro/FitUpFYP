@@ -17,6 +17,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class HeartView : Fragment(), SensorEventListener {
 
@@ -30,7 +35,6 @@ class HeartView : Fragment(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
     private lateinit var hr_text: TextView
     private lateinit var startButton: Button
-    private lateinit var backButton: Button
 
     //Permission
     private val REQUEST_SENSORS = 1
@@ -66,13 +70,6 @@ class HeartView : Fragment(), SensorEventListener {
         sensorManager = requireActivity().getSystemService(SENSOR_SERVICE) as SensorManager
         ppgSensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE)
 
-
-
-
-
-
-
-
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.activity_heartrate, container, false)
 
@@ -81,16 +78,19 @@ class HeartView : Fragment(), SensorEventListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
- //        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-
         val sensorManager = requireActivity().getSystemService(SENSOR_SERVICE) as SensorManager
         ppgSensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE)
+        startButton = view.findViewById(R.id.start_button)
         hr_text = view.findViewById(R.id.textViewHeartRate)
 
-
+        /*
+        Checks if the user doesn't have the ppg sensor
+         */
+        if(ppgSensor == null){
+            noPPG()
+        }
 
         /*  Starts the Heart Rate monitor */
-        startButton = view.findViewById(R.id.start_button)
         startButton.setOnClickListener {
             if(checkPermission()){
                 start()
@@ -99,16 +99,6 @@ class HeartView : Fragment(), SensorEventListener {
             }
         }
 
-
-        /* Goes back to the HomeFragment */
-        backButton = view.findViewById(R.id.buttonBack)
-        backButton.setOnClickListener {
-            sharedViewModel.updateHrButtonVisibility(true)
-            requireFragmentManager().popBackStack()
-        }
-
-
-
     }
 
 
@@ -116,6 +106,14 @@ class HeartView : Fragment(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         val sensorManager = requireActivity().getSystemService(SENSOR_SERVICE) as SensorManager
         ppgSensor = sensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE)
+
+
+        val calendar_db = Room.databaseBuilder(requireContext(), CalendarDatabase::class.java, "calendar_db").build()
+        val dao_access_calendar = calendar_db.calendarDao()
+        val today = LocalDate.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val formattedDate = today.format(formatter)
+
 
 
         if (measuring) {
@@ -127,7 +125,9 @@ class HeartView : Fragment(), SensorEventListener {
                     timer_end = System.currentTimeMillis()
                     sensorManager.unregisterListener(this)
                     hr_text.text = "Heart rate: $hr_value BPM"
+                    lifecycleScope.launch{dao_access_calendar.replaceHR(hr_value, formattedDate)}
                     startButton.isEnabled = true
+
                 }
             }
 
@@ -167,11 +167,13 @@ class HeartView : Fragment(), SensorEventListener {
 
     /*
     Detects whether the user has the Photoplethysmography Sensor and disables if they don't
-     */
+    */
     private fun noPPG(){
-        //If the user doesnt have the PPG then grey out the buttons.
-            //HomeFragment should probably call this so it can grey out HR button
+        startButton.isEnabled = false
+        hr_text.text = "PPG sensor not available, Please go to Home page"
+        hr_text
     }
+
 
 
 

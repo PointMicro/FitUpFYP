@@ -7,10 +7,10 @@ import android.widget.VideoView
 import com.example.fypfinal.R
 import com.smarteist.autoimageslider.SliderViewAdapter
 
-class SliderAdapter(imageUrl: ArrayList<Int>) :
+class SliderAdapter(video: ArrayList<Int>) :
     SliderViewAdapter<SliderAdapter.SliderViewHolder>() {
 
-    private var sliderList: ArrayList<Int> = imageUrl
+    private var sliderList: ArrayList<Int> = video
 
     override fun getCount(): Int {
         return sliderList.size

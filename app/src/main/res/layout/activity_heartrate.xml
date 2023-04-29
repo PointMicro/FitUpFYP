@@ -33,15 +33,6 @@
         android:layout_marginTop="50dp"
         android:src="@drawable/green_icon" />
 
-    <Button
-        android:id="@+id/buttonBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:text="Back" />
-
     <TextView
         android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
@@ -52,19 +43,16 @@
         android:text="Heart Rate Monitor"
         android:textSize="24sp" />
 
+
     <TextView
         android:id="@+id/textViewDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewTitle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="14dp"
         android:text="HOLD YOUR FINGER ON THE HEART RATE SLOT FOR 10
         \n SECONDS AND KEEP IT STEADY UNTIL THE CHECK STOPS."
         android:textSize="16sp" />
-
-
-
 
     <Button
         android:id="@+id/start_button"
@@ -73,17 +61,8 @@
         android:layout_below="@id/textViewDescription"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:text="updated again" />
+        android:text="start" />
 
-
-    <Button
-        android:id="@+id/add_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textViewDescription"
-        android:layout_marginTop="300dp"
-        android:layout_marginLeft="150dp"
-        android:text="Add to DB" />
 
     <TextView
         android:id="@+id/textViewHeartRate"
@@ -93,18 +72,6 @@
         android:layout_marginTop="32dp"
         android:layout_marginLeft="150dp"
         android:text="Heart rate: -- BPM"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/text555"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/start_button"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="112dp"
-        android:layout_marginBottom="00dp"
-        android:text="[Here goes the Resting / After Exercise / Other HR checker. It will then
- ask if you want to record it and start will change to redo to recheck it.]"
         android:textSize="16sp" />
 
 

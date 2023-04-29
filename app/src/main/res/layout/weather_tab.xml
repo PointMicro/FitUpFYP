@@ -78,7 +78,7 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/weather_img"
                 android:layout_width="129dp"
                 android:layout_height="104dp"
                 android:padding="2dp"

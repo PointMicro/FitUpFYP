@@ -20,8 +20,8 @@ data class Calendar2(
     val stepsTaken: Int? = null,
     @ColumnInfo(name = "total_calories_burned")
     val totalCaloriesBurned: Int = 0,
-    @ColumnInfo(name = "heart_rate_recordings")
-    val heartRateRecordings: List<Int>? = null
+    @ColumnInfo(name = "latest_hr")
+    val latestHR: Int? = null
 )
 
 @Entity(tableName = "steps")
@@ -32,15 +32,15 @@ data class Steps(
     val stepsTaken: Int?
 )
 
-@Entity(tableName = "hr_recordings")
-data class HrRecordings(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    @ColumnInfo(name = "date")
-    val date: String,
-    @ColumnInfo(name = "heart_rate")
-    val heartRate: Int
-)
+//@Entity(tableName = "hr_recordings")
+//data class HrRecordings(
+//    @PrimaryKey(autoGenerate = true)
+//    val id: Int = 0,
+//    @ColumnInfo(name = "date")
+//    val date: String,
+//    @ColumnInfo(name = "heart_rate")
+//    val heartRate: Int
+//)
 
 
 

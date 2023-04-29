@@ -32,7 +32,38 @@ class HomeFragment : Fragment(), SensorEventListener {
     val sharedViewModel: SharedViewModel by lazy {
         ViewModelProvider(this)[SharedViewModel::class.java]
     }
-//val sharedViewModel = ViewModelProvider(requireActivity())[SharedViewModel::class.java]
+
+
+//Todo
+    //HomePage
+        //Omit List heart rate and just keep the latest as an int
+            //Remove the Back button from HRM and just tell user to press home
+            //Remove add to DB button, it adds automatically
+            //Latest HR is is saved in database and replaces number already in it
+            //Quote and Notification tab at the top
+            //Make it say your name
+            //Fix steps counter(it does the total steps for the device, not start from 0) - may be complicated
+            //Add Latest HR to replace HRM number
+
+    //Misc in stats has:
+        //calories burned in total
+        //Count for each workout
+   //Settings
+        //Remove dark mode button and replace with privacy policy
+        //Fix change details button
+        //Delete account button
+        //Add the image to settings
+        //Make the name change in settings page
+    //Loading
+        //Add more images (add a b&w muscle pic)
+        //Add more inspirational quotes
+        //Welcome the user if they have a DB
+        //Terms of Service
+    //Train page
+        //Make calories burned center top and remove the ugly view around it
+        //Move the tips to above the buttons and make it bold and purple
+        //If enough time, add more videos and make them randomly appear on carousel
+        //Make a tip telling user to complete their goals!
 
 
     /*General variables for the step counter */
@@ -302,6 +333,7 @@ class HomeFragment : Fragment(), SensorEventListener {
         }
 
     }
+
 
 //    fun weatherTemp(){
 //        val queue = Volley.newRequestQueue(this)
