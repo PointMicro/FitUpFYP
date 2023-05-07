@@ -3,7 +3,6 @@ package com.example.fypfinal
 import androidx.room.*
 
 @Dao
-@TypeConverters(IntConverter::class)
 interface CalendarDao2 {
 
 
@@ -12,8 +11,8 @@ interface CalendarDao2 {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCalendar(calendar: Calendar2)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSteps(steps: Steps)
+//    @Insert(onConflict = OnConflictStrategy.REPLACE)
+//    suspend fun insertSteps(steps: Steps)
 
     //Insert step goal
     @Query("UPDATE plan_list SET steps_goals = :stepGoal WHERE date = :input")
@@ -22,6 +21,10 @@ interface CalendarDao2 {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFitnessPlan(fitPlan: Plan)
+
+
+    @Query("DELETE FROM plan_list WHERE date = :input")
+    suspend fun clearFitnessPlans(input: String)
 
 
     /* Get First and Last Dates from the Calendar */
@@ -36,14 +39,14 @@ interface CalendarDao2 {
     /* Retrieve from Calendar Database */
 
     @Query("SELECT steps_goals FROM plan_list WHERE date = :date")
-    suspend fun getStepGoals(date: String): Int?
+    suspend fun getStepGoals(date: String): Int
 
 
     @Query("SELECT date FROM calendar WHERE date = :input")
     suspend fun getCurrDate(input: String): String?
 
-    @Query("SELECT steps_taken FROM steps WHERE date = :input")
-    suspend fun getStepsTaken(input: String): Int?
+    @Query("SELECT steps_taken FROM calendar WHERE date = :input")
+    suspend fun getStepsTaken(input: String): Int
 
     @Query("SELECT latest_hr FROM calendar WHERE date = :input")
     suspend fun getLatestHR(input: String): Int?
@@ -88,8 +91,8 @@ interface CalendarDao2 {
     @Query("SELECT SUM(steps_taken) FROM calendar")
     suspend fun totalSteps(): Int
 
-
-
+    @Query("UPDATE calendar SET steps_taken = :steps_new WHERE date = :input")
+    suspend fun incrementSteps(steps_new: Int, input: String)
 
 
 
@@ -98,14 +101,13 @@ interface CalendarDao2 {
     @Query("UPDATE plan_list SET Goals_Today_Boolean = 1 WHERE date = :date")
     suspend fun updateGoalsSelected(date: String)
 
-    //Checks which dates have goals set
-    @Query("SELECT date FROM plan_list WHERE Goals_Today_Boolean = 1")
-    suspend fun getDatesWithSelectedGoals(): List<String>
+    @Query("UPDATE plan_list SET Goals_Today_Boolean = 0 WHERE date = :date")
+    suspend fun updateGoalsFalse(date: String)
+
 
     //Checks if boolean is true
     @Query("SELECT EXISTS (SELECT * FROM plan_list WHERE Goals_Today_Boolean = 1 AND date = :date) ")
      suspend fun isGoalTrue(date: String): Boolean
-
 
 
 

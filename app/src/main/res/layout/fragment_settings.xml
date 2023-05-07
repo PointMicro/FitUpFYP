@@ -3,47 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/settings_container"
     android:layout_height="match_parent"
     tools:context=".SettingsFragment">
 
-    <RelativeLayout
-        android:id="@+id/step_counter_view"
+
+    <View
+        android:id="@+id/name_display"
         android:layout_width="358dp"
-        android:layout_height="wrap_content"
+        android:layout_height="73dp"
         android:layout_gravity="center|top"
-        android:layout_marginTop="150dp"
-        android:background="@drawable/rounded_corners">
+        android:layout_marginTop="20dp"
+        android:background="@drawable/rounded_corners" />
 
-        <TextView
-            android:id="@+id/settings_nameTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="90dp"
-            android:layout_marginTop="3dp"
-            android:text="NAME HERE"
-            android:gravity="center_horizontal"
-            android:textColor="@color/black"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/settings_nameTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="110dp"
+        android:layout_marginTop="35dp"
+        android:gravity="center_horizontal"
+        android:text="NAME HERE"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:textStyle="bold" />
 
-
-    </RelativeLayout>
 
     <Button
-        android:id="@+id/darkModebutton"
+        android:id="@+id/privacy_policy"
         android:layout_width="159dp"
         android:layout_height="62dp"
         android:layout_marginLeft="125dp"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="150dp"
         android:backgroundTint="@color/black"
-        android:text="Change to Dark Mode" />
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="161dp"
-        android:layout_height="126dp"
-        tools:src="@drawable/icon_52721"
-        android:layout_gravity="top|center"/>
+        android:text="Privacy policy" />
 
     <Button
         android:id="@+id/detailsButton"
@@ -52,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="155dp"
         android:backgroundTint="@color/teal_700"
-        android:layout_marginTop="350dp" />
+        android:layout_marginTop="250dp" />
 
 
     <Button
@@ -60,7 +53,7 @@
         android:layout_width="120dp"
         android:layout_height="72dp"
         android:layout_marginLeft="145dp"
-        android:layout_marginTop="475dp"
+        android:layout_marginTop="355dp"
         android:backgroundTint="@color/dark_red"
         android:text="DELETE ACCOUNT" />
 

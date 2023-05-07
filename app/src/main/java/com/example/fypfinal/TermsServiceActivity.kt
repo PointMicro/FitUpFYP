@@ -1,24 +1,52 @@
 package com.example.fypfinal
 
 
+import android.Manifest
+import android.content.ContentValues.TAG
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
 
 class TermsServiceActivity : AppCompatActivity() {
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tos)
 
+
         lifecycleScope.launch {
             checkIfDBExists()
         }
+
+        var tos_text = findViewById<TextView>(R.id.textView)
+
+        tos_text.text = "By using Fit-Up-Fit-Now, you agree to the following terms and conditions:\n" +
+                "\n" +
+                "    Personal Use Only: You may use our app for personal use only.\n" +
+                "\n" +
+                "    Privacy: We respect your privacy and do not share your information with third parties.\n" +
+                "\n" +
+                "    User Content: You are responsible for any content you upload or share through our app.\n" +
+                "\n" +
+                "    Intellectual Property: Our app and intellectual property are owned by us or our licensors.\n" +
+                "\n" +
+                "    No Warranties: Our app is provided on an \"as is\" and \"as available\" basis.\n" +
+                "\n" +
+                "    Limitation of Liability: We are not liable for any damages arising from your use of our app."
 
 
         val accept_button = findViewById<Button>(R.id.ac1)

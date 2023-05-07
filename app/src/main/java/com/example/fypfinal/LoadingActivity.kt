@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -13,15 +15,24 @@ import kotlinx.coroutines.launch
 class LoadingActivity: AppCompatActivity() {
 
     lateinit var inspir_text: TextView
+    lateinit var welcome: TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_startsplash)
+        setContentView(R.layout.activity_loading)
 
         inspir_text = findViewById<TextView>(R.id.quoteText)
+        welcome = findViewById<TextView>(R.id.textView12)
         inspir_text.text = ""
         inspir_text.text = randomText()
+
+        val user_db = Room.databaseBuilder(this, UserDatabase::class.java, "userDB").build()
+        val dao_access = user_db.UserDao()
+
+        lifecycleScope.launch {
+            welcome.text = "Welcome! "+ dao_access.getName()
+        }
 
 
         Handler().postDelayed({

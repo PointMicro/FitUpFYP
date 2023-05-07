@@ -1,7 +1,9 @@
 package com.example.fypfinal
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -15,10 +17,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import kotlinx.coroutines.launch
 import android.content.DialogInterface;
+import android.content.pm.PackageManager
+import android.os.Handler
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
 
 
 class SurveyActivity : AppCompatActivity() {
+
+    private val PERMISSIONS_REQUEST_CODE = 980
 
 
 
@@ -27,6 +34,11 @@ class SurveyActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_survey)
 
+        //Permission check here:
+        // Check if the app has permissions
+        if (!hasPermissions()) {
+            requestPermissions()
+        }
 
 
 
@@ -186,14 +198,72 @@ class SurveyActivity : AppCompatActivity() {
         }
 
     }
-
-
-    private fun setHighlight(view: View, highlight: Boolean) {
-        if (highlight) {
-            view.setBackgroundColor(ContextCompat.getColor(this, R.color.red))
-        } else {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSIONS_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permissions granted, do something
+                // ...
+            } else {
+                // Permissions not granted, show a message and close the app
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Permission Required")
+                builder.setMessage("This app requires all permissions to function properly. Please grant all permissions.")
+                builder.setPositiveButton("OK") { _, _ ->
+                   // finishAndRemoveTask()
+                    finish()
+                }
+                builder.setCancelable(false)
+                builder.show()
+            }
         }
     }
+
+
+
+    private fun hasPermissions(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.ACTIVITY_RECOGNITION
+        ) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.BODY_SENSORS
+                ) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.INTERNET
+                ) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.ACCESS_NETWORK_STATE
+                ) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun requestPermissions() {
+        ActivityCompat.requestPermissions(this,
+            arrayOf(android.Manifest.permission.ACTIVITY_RECOGNITION,
+                android.Manifest.permission.BODY_SENSORS,
+                android.Manifest.permission.INTERNET,
+                android.Manifest.permission.ACCESS_NETWORK_STATE,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                android.Manifest.permission.ACCESS_FINE_LOCATION),
+            PERMISSIONS_REQUEST_CODE)
+    }
+
+
 
 
 

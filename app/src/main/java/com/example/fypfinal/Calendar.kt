@@ -2,7 +2,6 @@ package com.example.fypfinal
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
 
 @Entity(tableName = "calendar")
 data class Calendar2(
@@ -17,32 +16,20 @@ data class Calendar2(
     @ColumnInfo(name = "workout_strength_count")
     val workoutStrengthCount: Int = 0,
     @ColumnInfo(name = "steps_taken")
-    val stepsTaken: Int? = null,
+    val stepsTaken: Int = 0,
     @ColumnInfo(name = "total_calories_burned")
     val totalCaloriesBurned: Int = 0,
     @ColumnInfo(name = "latest_hr")
     val latestHR: Int? = null
 )
 
-@Entity(tableName = "steps")
-data class Steps(
-    @PrimaryKey
-    val date: String,
-    @ColumnInfo(name = "steps_taken")
-    val stepsTaken: Int?
-)
-
-//@Entity(tableName = "hr_recordings")
-//data class HrRecordings(
-//    @PrimaryKey(autoGenerate = true)
-//    val id: Int = 0,
-//    @ColumnInfo(name = "date")
+//@Entity(tableName = "steps")
+//data class Steps(
+//    @PrimaryKey
 //    val date: String,
-//    @ColumnInfo(name = "heart_rate")
-//    val heartRate: Int
+//    @ColumnInfo(name = "steps_taken")
+//    val stepsTaken: Int?
 //)
-
-
 
 @Entity(tableName = "plan_list")
 data class Plan(

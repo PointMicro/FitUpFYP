@@ -69,26 +69,16 @@
         android:visibility="visible"
         tools:visibility="visible">
 
-        <FrameLayout
-            android:id="@+id/misc_View"
-            android:layout_width="154dp"
-            android:layout_height="270dp"
-            android:layout_marginStart="245dp"
+        <ImageView
+            android:id="@+id/imageView6"
+            android:src="@drawable/cardio_stats"
+            android:layout_width="240dp"
+            android:layout_height="307dp"
+            android:layout_marginStart="180dp"
             android:layout_marginTop="350dp"
             android:layout_marginEnd="45dp"
-            android:background="@drawable/rounded_corners">
-
-            <TextView
-                android:id="@+id/misc_TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Misc Options:"
-                android:textSize="16sp"
-                android:textColor="@android:color/white"
-                android:layout_gravity="center" />
-
-
-        </FrameLayout>
+>
+        </ImageView>
 
         <FrameLayout
             android:id="@+id/BMI_View"
@@ -113,11 +103,11 @@
         <FrameLayout
             android:id="@+id/survey_View"
             android:layout_width="148dp"
-            android:layout_height="413dp"
+            android:layout_height="465dp"
             android:layout_marginStart="22dp"
             android:layout_marginTop="210dp"
             android:layout_marginBottom="95dp"
-            android:background="@drawable/rounded_corners" >
+            android:background="@drawable/rounded_corners">
 
             <TextView
                 android:id="@+id/surveyTextView"

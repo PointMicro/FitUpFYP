@@ -6,11 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import kotlinx.coroutines.launch
@@ -20,17 +19,15 @@ import java.util.concurrent.TimeoutException
 
 class SettingsFragment : Fragment() {
 
-    lateinit var dM_Button: Button
+    val sharedViewModel: SharedViewModel by lazy {
+        ViewModelProvider(this)[SharedViewModel::class.java]
+    }
+
     lateinit var details_Button: Button
     lateinit var delete_Button: Button
-    lateinit var genderSpinner: Spinner
-    lateinit var fitnessGoalSpinner: Spinner
-    lateinit var injurySpinner: Spinner
-    lateinit var name_Settings: TextView
-    lateinit var age_Settings: TextView
-    lateinit var weight_Settings: TextView
-    lateinit var height_Settings: TextView
-
+    lateinit var name_display_view: View
+    lateinit var name_settings: TextView
+    lateinit var privacy_button: Button
 
 
 
@@ -46,9 +43,20 @@ class SettingsFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(com.example.fypfinal.R.layout.fragment_settings, container, false)
 
-        dM_Button = view.findViewById(R.id.darkModebutton)
         delete_Button = view.findViewById(R.id.deleteButton)
         details_Button = view.findViewById(R.id.detailsButton)
+        name_display_view = view.findViewById(R.id.name_display)
+        name_settings = view.findViewById(R.id.settings_nameTV)
+        privacy_button = view.findViewById(R.id.privacy_policy)
+
+
+        val user_db = Room.databaseBuilder(requireContext(), UserDatabase::class.java, "userDB").build()
+        val dao_access = user_db.UserDao()
+
+        lifecycleScope.launch {
+            name_settings.text = dao_access.getName()
+        }
+
 
 
 
@@ -60,122 +68,103 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        dM_Button.setOnClickListener{
+        privacy_button.setOnClickListener {
+            val messageText = "At Fit-Up-Fit-Now, we take your privacy seriously. " +
+                    "The data collected involves: location data for weather, biometrics for " +
+                    "the heart rate monitor," + " and tracking data for the steps tracker. We also" +
+                    " collect your name, age, " + "gender, height, and weight for the survey you had" +
+                    " answered and stats for calculations." + " We do not share your data with " +
+                    "third parties. All data is kept " + "confidential and is used only for " +
+                    "improving our" + " services and providing " + "you with a better fitness " +
+                    "experience. " + "By using Fit-Up-Fit-Now, " + "you agree to our privacy policy."
+            val alertDialog = AlertDialog.Builder(requireContext())
+                .setTitle("Privacy Policy")
 
-        }
-
-
-        delete_Button.setOnClickListener{
-
-        }
-
-        details_Button.setOnClickListener{
-
-            val builder = AlertDialog.Builder(requireContext())
-            val inflater = LayoutInflater.from(requireContext())
-            val dialogLayout = inflater.inflate(R.layout.change_details, null)
-
-
-
-            val genderSettingsList = listOf("Unchanged", "Male", "Female", "Other")
-            val injurySettingsList = listOf("Unchanged", "Yes", "No")
-            val fGSettingsList = listOf("Unchanged", "Muscle Build", "Other / General", "Weight Loss")
-
-            val genderAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, genderSettingsList)
-            val injuryAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, injurySettingsList)
-            val fGSettingsAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, fGSettingsList)
-
-            genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            injuryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            fGSettingsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-            genderSpinner.adapter = genderAdapter
-            injurySpinner.adapter = injuryAdapter
-            fitnessGoalSpinner.adapter = fGSettingsAdapter
-
-
-
-
-            builder.setView(dialogLayout).setPositiveButton("Confirm") { dialogInterface, i ->
-                // handle confirm button click
-
-                val calendar_db = Room.databaseBuilder(requireContext(),
-                    CalendarDatabase::class.java, "calendar_db").build()
-                val dao_access_calendar = calendar_db.calendarDao()
-
-
-                val user_db = Room.databaseBuilder(requireContext(),
-                    UserDatabase::class.java, "userDB").build()
-                val dao_access_user = user_db.UserDao()
-
-                lifecycleScope.launch {
-                    val old_name = dao_access_user.getName()
-                    val old_age = dao_access_user.getAge()
-                    val old_height = dao_access_user.getHeight()
-                    val old_weight = dao_access_user.getWeight()
-                    val old_injury = dao_access_user.getInjury()
-                    val old_fitness = dao_access_user.getTrueFitGoal()
-
-
-
-                genderSpinner.selectedItem.toString()
-                injurySpinner.selectedItem.toString()
-                fitnessGoalSpinner.selectedItem.toString()
-
-
-                val changeBuilder = StringBuilder()
-                val errorBuilder = StringBuilder()
-
-                    //Null means keep unchanged and dont acknowledge it
-                        //If age is under 16 then error appears
-
-                val name = name_Settings.text.toString()
-                if(name.isNotBlank()) {
-                    changeBuilder.append(old_name + "Will be updated to:  " + name)
+                .setMessage(messageText)
+                .setPositiveButton("OK") { _, _ ->
+                    // Handle OK button click
                 }
-                val age = age_Settings.text.toString().toIntOrNull()
-                 if(age != null && age > 15){
-                     changeBuilder.append(old_age.toString() + "Will be updated to:" + age)
-                 }else if(age != null && age < 16){
-                     errorBuilder.append("This application is 16+")
-                 }
-                    val height = height_Settings.text.toString().toInt()
-                    if(height != null && height > 240 || height < 90){
-                        errorBuilder.append("Enter a valid height")
-                    }else if(height != null){
-                        changeBuilder.append(old_height.toString() + "cm will be updated to: "
-                                + height)
-                    }
-                    val weight = weight_Settings.text.toString().toInt()
-//                    if (){
-//
-//                    }
-
-
-
-                }
-
-            }
-                .setNegativeButton("Cancel") { dialogInterface, i ->
-                    // handle cancel button click
-                }
-            val alertDialog = builder.create()
+                .create()
             alertDialog.show()
 
         }
 
+// Create instances of the user and calendar databases
+        val user_db = Room.databaseBuilder(requireContext(), UserDatabase::class.java, "userDB").build()
+        val dao_access = user_db.UserDao()
+        val calendar_db = Room.databaseBuilder(requireContext(), CalendarDatabase::class.java, "calendar_db").build()
+
+// Set an on-click listener for the delete button
+        delete_Button.setOnClickListener {
+            // Display a dialog to warn the user before deleting the database
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("Delete User Data")
+            builder.setMessage("Are you sure you want to delete data? This action cannot be undone.")
+            builder.setPositiveButton("Delete") { _, _ ->
+                // Get the user's name to confirm the deletion
+                val input = EditText(requireContext())
+                input.hint = "Type your name to confirm."
+                val confirmBuilder = AlertDialog.Builder(requireContext())
+                confirmBuilder.setView(input)
+                confirmBuilder.setPositiveButton("Confirm") { _, _ ->
+
+                    // Check if the user entered their name correctly
+                    val name = input.text.toString().trim()
+                    lifecycleScope.launch {
+                    if (name.equals(dao_access.getName() , ignoreCase = true)) {
+                        // If the name is correct, delete the database
+                        context?.deleteDatabase("userDB")
+                        context?.deleteDatabase("calendar_db")
+                        Toast.makeText(requireContext(), "Data has been deleted", Toast.LENGTH_SHORT).show()
+                        requireActivity().finishAffinity()
+                        System.exit(0)
+                    } else {
+                        // If the name is incorrect, show an error message
+                        Toast.makeText(requireContext(), "Name does not match. Deletion cancelled.", Toast.LENGTH_SHORT).show()
+                    }
+                    }
+                }
+                confirmBuilder.setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.cancel()
+                }
+                confirmBuilder.show()
+            }
+            builder.setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }
+            builder.show()
+
+
+        }
+
+
+
+
+
+        sharedViewModel.isCardViewVisible.observe(viewLifecycleOwner,{ isVisible ->
+            details_Button.isVisible = isVisible
+            delete_Button.isVisible = isVisible
+            name_display_view.isVisible = isVisible
+            name_settings.isVisible = isVisible
+            privacy_button.isVisible = isVisible
+        })
+
+        details_Button.setOnClickListener{
+
+            val fragment = ChangeDetails()
+            val transaction = requireFragmentManager().beginTransaction()
+            transaction.replace(R.id.settings_container, fragment)
+            transaction.addToBackStack(null)
+            sharedViewModel.updateCardViewVisibility(false)
+            transaction.commit()
+
+        }
+
+
     }
 
-
-/*
-deleteButton.setOnClickListener {
-    // Call the clearAllTables() method to delete the database
-    //also warn the user and make them type a password to reset
-    user_db.clearAllTables()
-    calendar_db.clearAllTables()
 }
 
- */
 
 
-}
+

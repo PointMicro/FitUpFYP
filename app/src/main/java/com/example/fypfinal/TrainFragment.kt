@@ -91,7 +91,7 @@ class TrainFragment : Fragment() {
         val dao_access = calendar_db.calendarDao()
 
         lifecycleScope.launch {
-        var caloriesCount = dao_access.getCaloriesBurned(formattedDate)
+        var caloriesCount = dao_access.getCaloriesBurned(finalDateString)
         calorieView.text = "Calories Burned Today: (30 min estimation):\n" + caloriesCount
         }
         var yoga_counter = 0
@@ -116,6 +116,12 @@ class TrainFragment : Fragment() {
             yoga_button.isEnabled = true
             strength_button.isEnabled = true
             cardio_button.isEnabled = true
+
+            if(yoga_counter > 0 || strength_counter > 0 || cardio_counter > 0){
+                yoga_button.setBackgroundColor(Color.MAGENTA)
+
+
+            }
             startAlert()
         }
 
@@ -198,7 +204,7 @@ class TrainFragment : Fragment() {
             if(cardio_counter > 0){
 
                 cardio_button.setBackgroundColor(Color.parseColor("#FFD700"))
-
+                cardioAlert()
 
             }else{
 
@@ -295,7 +301,9 @@ class TrainFragment : Fragment() {
 
     fun yogaAlert(){
 
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.change_details, null)
         val builder = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
 
         builder.setTitle("Yoga Guide")
         val messageText = "You have selected Yoga training. Here are some yoga related workouts:\n" +

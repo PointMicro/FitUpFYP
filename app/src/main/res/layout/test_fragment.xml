@@ -19,18 +19,18 @@
         android:background="@drawable/rounded_corners">
 
         <TextView
-            android:id="@+id/today_step_num"
+            android:id="@+id/today_TV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="50dp"
-            android:text="0"
-            android:textColor="@color/red"
+            android:text="Current steps"
+            android:textColor="#2561a0"
             android:textSize="30sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/yesterday_step_num"
+            android:id="@+id/today_step_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -44,24 +44,26 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/weatherTip_TV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-60dp"
+        android:text="Weather tip here"
+        android:textStyle="bold"
+        android:textColor="@color/purple_700"
+        android:textSize="22sp"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="20dp"/>
+
+
+    <TextView
         android:id="@+id/textforstep"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
         android:layout_gravity="center_vertical|left"
         android:layout_marginHorizontal="20dp"
-        android:text="Today's Steps:"
-        android:textSize="12sp"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:id="@+id/textforstep2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:layout_gravity="center_vertical|right"
-        android:layout_marginHorizontal="20dp"
-        android:text="Yesterday's Steps:"
+        android:text="Step Tracker"
         android:textSize="12sp"
         android:textStyle="bold"/>
 
@@ -96,7 +98,7 @@
         android:layout_marginTop="165dp"
         android:layout_marginHorizontal="50dp"
         android:text="HRM"
-        android:textColor="@color/teal_700"
+        android:textColor="#2561a0"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -107,7 +109,6 @@
         android:layout_marginTop="510dp"
         android:layout_marginHorizontal="37dp"
         android:gravity="center|right"
-
         android:text="NO SENSOR DETECTED"
         android:textColor="@color/purple_700"
         android:textSize="20sp"
@@ -153,39 +154,88 @@
         android:text="QUOTE TEXT GOES HERE"
         android:textSize="26dp" />
 
-    <com.smarteist.autoimageslider.SliderView
-        android:id="@+id/news_section"
+    <androidx.cardview.widget.CardView
         android:layout_width="344dp"
         android:layout_height="205dp"
-        android:layout_centerInParent="true"
-        app:sliderAnimationDuration="600"
-        app:sliderAutoCycleDirection="back_and_forth"
-        app:sliderIndicatorAnimationDuration="600"
-        app:sliderIndicatorEnabled="true"
-        app:sliderIndicatorGravity="center_horizontal|bottom"
-        app:sliderIndicatorMargin="15dp"
-        app:sliderIndicatorOrientation="horizontal"
-        app:sliderIndicatorPadding="3dp"
-        app:sliderIndicatorRadius="2dp"
-        app:sliderIndicatorSelectedColor="#5A5A5A"
-        app:sliderIndicatorUnselectedColor="#FFF"
-        app:sliderScrollTimeInSec="1"
+        android:id="@+id/weather_card"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="70dp"
+        android:layout_weight="0"
+        android:background="#2561a0"
+        android:backgroundTint="#2561a0"
+        >
 
-        android:layout_gravity="center"
-        android:layout_marginTop="-175dp"
-        android:background="@drawable/rounded_corners"
-        android:orientation="vertical"
-        android:gravity="center">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="News Section"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="354dp"
+            android:layout_height="205dp">
 
-    </com.smarteist.autoimageslider.SliderView>
+            <TextView
+                android:id="@+id/city_name_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="City"
+                android:textColor="@color/white"
+                android:textSize="34dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.726"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.1" />
 
+            <TextView
+                android:id="@+id/country_name_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="52dp"
+                android:text="Country"
+                android:textColor="#cbae4c"
+                android:textSize="22dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/city_name_textView" />
+
+            <TextView
+                android:id="@+id/temperature_textView"
+                android:layout_width="123dp"
+                android:layout_height="61dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="28dp"
+                android:gravity="start|top"
+                android:text="TEMP"
+
+                android:textColor="#cbae4c"
+                android:textSize="44dp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/country_name_textView" />
+
+            <TextView
+                android:id="@+id/description_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="196dp"
+                android:layout_marginBottom="56dp"
+                android:text="Weather Desc"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+                android:id="@+id/weather_img"
+                android:layout_width="129dp"
+                android:layout_height="104dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                android:padding="2dp"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
 
 

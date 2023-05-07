@@ -32,11 +32,21 @@ In this context its the hr_button from HomeFragment
 class SharedViewModel : ViewModel() {
 
     private val _isHrButtonVisible = MutableLiveData(true)
+    private val _isCardViewVisible = MutableLiveData(true)
     val isHrButtonVisible: LiveData<Boolean> = _isHrButtonVisible
+
+    val isCardViewVisible: LiveData<Boolean> = _isCardViewVisible
 
     fun updateHrButtonVisibility(isVisible: Boolean) {
         _isHrButtonVisible.postValue(isVisible)
     }
+
+    fun updateCardViewVisibility(isVisible: Boolean) {
+        _isCardViewVisible.postValue(isVisible)
+    }
+
+
+
 }
 
 

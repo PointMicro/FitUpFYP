@@ -55,10 +55,29 @@ interface UserDao {
     @Query("SELECT CASE WHEN FG_Other = 1 THEN 'FG_Other' WHEN FG_WL = 1 THEN 'FG_WL' WHEN FG_MB = 1 THEN 'FG_MB' END AS Final_Value FROM users WHERE FG_Other = 1 OR FG_WL = 1 OR FG_MB = 1")
     suspend fun getTrueFitGoal(): String?
 
-    @Query("UPDATE users SET dark_mode = 1")
-    fun darkModeTrue()
 
-    @Query("UPDATE users SET dark_mode = 0")
-    fun darkmodeFalse()
+    /* Updating the survey options*/
+
+    @Query("UPDATE users SET name = :input")
+    suspend fun insertnewName(input: String)
+
+    @Query("UPDATE users SET age = :input")
+    suspend fun insertNewAge(input: Int?)
+
+    @Query("UPDATE users SET gender = :input")
+    suspend fun insertNewGender(input: String)
+
+    @Query("UPDATE users SET weight = :input")
+    suspend fun insertnewWeight(input: Int?)
+
+    @Query("UPDATE users SET height = :input")
+    suspend fun insertnewHeight(input: Int?)
+
+//    @Query("UPDATE users SET injuries = CASE WHEN :input = 'Yes' THEN 1")
+//    suspend fun insertNewInjury(input: String)
+
+//    @Query("UPDATE users SET ")
+//    suspend fun insertNewFG(input: String)
+
 
 }

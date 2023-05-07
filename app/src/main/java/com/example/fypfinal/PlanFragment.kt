@@ -76,11 +76,6 @@ class PlanFragment : Fragment() {
         workout_text.visibility = View.INVISIBLE
         steps_text.visibility = View.INVISIBLE
 
-
-
-
-//Need to amke it show year
-
         val calendar_db = databaseBuilder(requireContext(), CalendarDatabase::class.java, "calendar_db").build()
         val dao_access_calendar = calendar_db.calendarDao()
 
@@ -265,10 +260,7 @@ class PlanFragment : Fragment() {
                     lifecycleScope.launch {
 
                         val ed1 = dao_access_calendar.getTrueSelection(convertedgoalEE)
-                        val ed2 = dao_access_calendar.getStepGoals(convertedgoalEE).toString()
-                        if(ed2 == "null"){
-                            ed2 == "0"
-                        }
+                        val ed2 = dao_access_calendar.getStepGoals(convertedgoalEE)?.toString() ?: "0"
                         val eventData = ed1 + ":" + ed2
                         val workout = eventData.split(":")[0]
                         val steps = eventData.split(":")[1].toInt()
@@ -282,28 +274,59 @@ class PlanFragment : Fragment() {
 
                         workout_text.text = "Workout Goal: " + workout
                         steps_text.text = "Steps Goal: " + steps.toString()
-
-
                     }
                     goal_wko_text.visibility = View.INVISIBLE
                     goal_step_text.visibility = View.INVISIBLE
                     workoutSpinner.visibility = View.INVISIBLE
                     stepsNum.visibility = View.INVISIBLE
-
-
-
                 }
                     .setNegativeButton("Cancel") { dialogInterface, i ->
-                        // handle cancel button click
                     }
                 val alertDialog = builder.create()
                 alertDialog.show()
-
-
             }
 
 
         }
+
+        resetButton.setOnClickListener {
+            clickedDate?.let { date ->
+
+                val inputDateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'Z yyyy", Locale.US)
+                val date2 = inputDateFormat.parse(date.toString())
+                val timeInMillis = date2.time //clickedDate in millis
+
+                val convertedgoalEE = formatDateEE(date) //clicked date in yyyy-MM-dd format
+
+                val convertedDate = formatDateEE(date)
+                val calendar_db = databaseBuilder(requireContext(), CalendarDatabase::class.java, "calendar_db").build()
+                val dao_access = calendar_db.calendarDao()
+
+                lifecycleScope.launch {
+                    dao_access.clearFitnessPlans(convertedDate)
+                    val updated_Plan = Plan(convertedgoalEE, false, false, false, false, null)
+                    dao_access.insertFitnessPlan(updated_Plan)
+                    dao_access.updateGoalsFalse(convertedgoalEE)
+
+                   // val ed1 = dao_access_calendar.getTrueSelection(convertedgoalEE)
+                 //   val ed2 = dao_access_calendar.getStepGoals(convertedgoalEE)?.toString() ?: "0"
+                 //   val eventData = ed1 + ":" + ed2
+                //    val workout = eventData.split(":")[0]
+                 //   val steps = eventData.split(":")[1].toInt()
+
+                compactCalendarView.removeEvent(Event(Color.BLUE,timeInMillis))   //goals today is false
+                }
+
+                // Update the UI to reflect that the goal has been removed
+                workout_text.visibility = View.INVISIBLE
+                steps_text.visibility = View.INVISIBLE
+                goalButton.isEnabled = true
+                goalButton.visibility = View.VISIBLE
+                resetButton.isEnabled = false
+                resetButton.visibility = View.INVISIBLE
+            }
+        }
+
     }
     fun formatDateEE(inputDateString: Date?): String {
         val inputDateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss 'GMT'Z yyyy", Locale.US)

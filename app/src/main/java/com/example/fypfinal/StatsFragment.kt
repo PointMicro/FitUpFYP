@@ -26,7 +26,6 @@ class StatsFragment : Fragment() {
 
     lateinit var stepsTV: TextView
     lateinit var workoutTV: TextView
-    lateinit var miscText: TextView
     lateinit var bmiText: TextView
     lateinit var surveyTextView: TextView
     val todayUnformatted = LocalDate.now()
@@ -44,21 +43,6 @@ class StatsFragment : Fragment() {
         val calendar_db = Room.databaseBuilder(requireContext(), CalendarDatabase::class.java, "calendar_db").build()
         val dao_access_calendar = calendar_db.calendarDao()
 
-
-
-
-        //Could be a loading info screen
-
-
-
-        //Get the name, gender height and width.
-            //Replace "Survey Options" with the database values (includes new line)
-
-            //BMI is calculated
-
-            //Common is replaced with the most common workout
-
-
     }
 
     override fun onCreateView(
@@ -70,7 +54,6 @@ class StatsFragment : Fragment() {
         stepsTV = view.findViewById(R.id.steps_textview)
         bmiText = view.findViewById(R.id.BMI_TV)
         workoutTV = view.findViewById(R.id.commonWorkout_TV)
-        miscText = view.findViewById(R.id.misc_TV)
         surveyTextView = view.findViewById(R.id.surveyTextView)
 
         val user_db = Room.databaseBuilder(requireContext(), UserDatabase::class.java,
@@ -88,6 +71,7 @@ class StatsFragment : Fragment() {
             var gender = dao_access_user.getGender().toString()
             var height = dao_access_user.getHeight()!!
             var weight = dao_access_user.getWeight()!!
+            var age = dao_access_user.getAge()!!
             var injury = dao_access_user.getInjury()
             var fitness_goal = dao_access_user.getTrueFitGoal()
             var workout_yoga_count = dao_access_calendar.allYogaCount()
@@ -98,8 +82,8 @@ class StatsFragment : Fragment() {
             val highestWorkout = getHighestWorkoutCount(workout_cardio_count,
                 workout_yoga_count, workout_strength_count)
             var total_workouts = dao_access_calendar.allWorkoutsCount()
-            var total_steps = 0 //dao_access_calendar.totalSteps()
-            var today_steps = 0 //dao_access_calendar.getStepsTaken(today)
+            var total_steps = dao_access_calendar.totalSteps()
+            var today_steps = dao_access_calendar.getStepsTaken(today)
             var bmi = calculateBMI(weight, height)
 
             /* Changing the Text Views to adjust to the database */
@@ -107,7 +91,6 @@ class StatsFragment : Fragment() {
             stepsTV.text = "Total Steps: $total_steps\nSteps Today: $today_steps"
             workoutTV.text = "Most Common Workout: \n" + highestWorkout
             bmiText.text = "BMI: " + bmi +"\n" + bmiResult(bmi)
-            miscText.text = ""
            // surveyTextView.text = "Survey Results:\n" + "Name: " + name +"\n" + "Gender: "+ gender +
            //         "\n" + "Height: "
 
@@ -115,10 +98,12 @@ class StatsFragment : Fragment() {
 
             val survey_text_title = "Survey Results:\n" + "\n"
             val nameTitle = "Name:\n"
+            val ageTitle = "Age :\n"
             val genderTitle = "Gender:\n"
             val heightTitle = "Height:\n"
             val weightTitle = "Weight:\n"
             val fitGoalTitle = "Main Goal:\n"
+            val injTitle = "Injuries?:\n"
             val centerAlignment = Layout.Alignment.ALIGN_CENTER
             val titleStyle = StyleSpan(Typeface.BOLD)
             val titleSpannable = SpannableString(survey_text_title)
@@ -129,6 +114,14 @@ class StatsFragment : Fragment() {
             val nameSpannable = SpannableString(name+ "\n" + "\n")
             nameSpannable.setSpan(AlignmentSpan.Standard(centerAlignment), 0, name.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
+            val injSpannable = SpannableString(injury+ "\n" + "\n")
+            if (injury != null) {
+                injSpannable.setSpan(AlignmentSpan.Standard(centerAlignment), 0, injury.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+
+            val ageSpannable = SpannableString(age.toString() + "\n" + "\n")
+            ageSpannable.setSpan(AlignmentSpan.Standard(centerAlignment), 0, age.toString().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
             val genderSpannable = SpannableString(gender+ "\n" + "\n")
             genderSpannable.setSpan(AlignmentSpan.Standard(centerAlignment), 0, gender.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
@@ -138,15 +131,17 @@ class StatsFragment : Fragment() {
             val weightSpannable = SpannableString(weight.toString()+ "kg" + "\n" + "\n")
             weightSpannable.setSpan(AlignmentSpan.Standard(centerAlignment), 0, weight.toString().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-            val fitGoalSpannabler = SpannableString(fitness_goal?.let { changeFGText(it) } + "\n" + "\n")
+            val fitGoalSpannable = SpannableString(fitness_goal?.let { changeFGText(it) } + "\n" + "\n")
             if (fitness_goal != null) {
-                fitGoalSpannabler.setSpan(AlignmentSpan.Standard(centerAlignment), 0, fitness_goal.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                fitGoalSpannable.setSpan(AlignmentSpan.Standard(centerAlignment), 0, fitness_goal.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
 
 
             builder.append(titleSpannable)
             builder.append(nameTitle)
             builder.append(nameSpannable )
+            builder.append(ageTitle)
+            builder.append(ageSpannable)
             builder.append(genderTitle)
             builder.append(genderSpannable)
             builder.append(heightTitle)
@@ -154,7 +149,9 @@ class StatsFragment : Fragment() {
             builder.append(weightTitle)
             builder.append(weightSpannable)
             builder.append(fitGoalTitle)
-            builder.append(fitGoalSpannabler)
+            builder.append(fitGoalSpannable)
+            builder.append(injTitle)
+            builder.append(injSpannable)
 
 
 

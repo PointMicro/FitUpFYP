@@ -127,12 +127,9 @@ class HeartView : Fragment(), SensorEventListener {
                     hr_text.text = "Heart rate: $hr_value BPM"
                     lifecycleScope.launch{dao_access_calendar.replaceHR(hr_value, formattedDate)}
                     startButton.isEnabled = true
-
                 }
             }
-
         }
-
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
