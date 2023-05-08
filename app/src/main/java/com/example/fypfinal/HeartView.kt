@@ -115,7 +115,7 @@ class HeartView : Fragment(), SensorEventListener {
         val formattedDate = today.format(formatter)
 
 
-
+//Heart rate tracker
         if (measuring) {
             val hr_value = event?.values?.get(0)?.toInt() ?: -1
             if (hr_value != -1) {

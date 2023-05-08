@@ -38,15 +38,6 @@ class TrainFragment : Fragment() {
     lateinit var sliderAdapter: SliderAdapter
 
 
-
-
-    //QUOTE TEXT could range from both inspirational and notifications
-    //Home carousel
-        //Weather
-        //A page like a game (eg. FGO) where it gives you a tip
-        //Inspirational text with a fitness image
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -429,7 +420,7 @@ class TrainFragment : Fragment() {
 
         val builder = AlertDialog.Builder(requireContext())
 
-        builder.setTitle("Cardiovascular Guide")
+        builder.setTitle("Start")
 
         builder.setMessage("You have started the workout!\n\n" +"Pick a workout:\n" +
                 "(Once you choose a workout, you cannot change it.)")

@@ -18,8 +18,6 @@ class ChangeDetails  : Fragment(){
     lateinit var weight_Settings: TextView
     lateinit var height_Settings: TextView
     lateinit var genderSpinner: Spinner
-    lateinit var injurySpinner: Spinner
-    lateinit var change_details_button: Button
      var height_boolean: Boolean = false
      var weight_boolean:Boolean = false
      var age_boolean:Boolean = false
@@ -71,7 +69,6 @@ class ChangeDetails  : Fragment(){
         submit_button.setOnClickListener{
             val calendar_db = Room.databaseBuilder(requireContext(),
                 CalendarDatabase::class.java, "calendar_db").build()
-            val dao_access_calendar = calendar_db.calendarDao()
 
 
             val user_db = Room.databaseBuilder(requireContext(),
@@ -96,13 +93,13 @@ class ChangeDetails  : Fragment(){
 
                 val name = name_Settings.text.toString()
                 if(name.isNotBlank()) {
-                    changeBuilder.append(old_name + "Will be updated to:  " + name)
+                    changeBuilder.append(old_name + " will be updated to:  " + name)
                     name_boolean = true
                     counter += 1
                 }
                 val age = age_Settings.text.toString().toIntOrNull()
                 if(age != null && age > 15){
-                    changeBuilder.append(old_age.toString() + "Will be updated to:" + age)
+                    changeBuilder.append(old_age.toString() + " will be updated to:" + age)
                     age_boolean = true
                     counter += 1
 
@@ -137,7 +134,7 @@ class ChangeDetails  : Fragment(){
 
                 val gender = genderSpinner.selectedItem.toString()
                 if (gender != "Unchanged"){
-                    changeBuilder.append(old_gender.toString() + "gender will updated to: "
+                    changeBuilder.append(old_gender.toString() + " will updated to: "
                             + gender)
                     gender_boolean = true
                     counter += 1
@@ -146,7 +143,7 @@ class ChangeDetails  : Fragment(){
 
 
                 val builder = AlertDialog.Builder(requireContext())
-                builder.setTitle("Strength Guide")
+                builder.setTitle("Change Confirmation")
                 builder.setMessage(changeBuilder)
 
 
@@ -160,24 +157,28 @@ class ChangeDetails  : Fragment(){
                         //Update height
                         dao_access_user.insertnewHeight(height)
                     }
-                    else if(weight_boolean){
+                     if(weight_boolean){
                         //Update Weight
                         dao_access_user.insertnewWeight(weight)
                     }
-                    else if(name_boolean){
+                     if(name_boolean){
                     dao_access_user.insertnewName(name)
                     }
-                    else if(age_boolean){
+                     if(age_boolean){
                         dao_access_user.insertNewAge(age)
 
                     }
-                    else if(gender_boolean){
+                     if(gender_boolean){
                         dao_access_user.insertNewGender(gender)
 
                     }
 
 
                     }
+
+                    Toast.makeText(requireContext(), "Details updated",
+                        Toast.LENGTH_SHORT).show()
+
 
 
                 }

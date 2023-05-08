@@ -155,7 +155,7 @@ class PlanFragment : Fragment() {
                 if (events.isNotEmpty()) {
                     val eventNames = events.map { it.data as String }
                     val value = dateClicked
-                    val message = "Events for ${dateClicked}: ${eventNames.joinToString(", ")}"
+                    val message = "Goals for ${dateClicked}: ${eventNames.joinToString(", ")}"
                     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 
                     //Show the views and stuff
@@ -170,7 +170,7 @@ class PlanFragment : Fragment() {
 
                 } else {
                         //dateClicked is EEE MMM dd HH:mm:ss 'GMT'Z yyyy
-                    Toast.makeText(requireContext(), "No events for ${dateClicked}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "No goals for ${dateClicked}", Toast.LENGTH_SHORT).show()
                     //Keep it the same
                     goalButton.visibility = View.VISIBLE
                     goalButton.isEnabled = true
@@ -260,7 +260,7 @@ class PlanFragment : Fragment() {
                     lifecycleScope.launch {
 
                         val ed1 = dao_access_calendar.getTrueSelection(convertedgoalEE)
-                        val ed2 = dao_access_calendar.getStepGoals(convertedgoalEE)?.toString() ?: "0"
+                        val ed2 = dao_access_calendar.getStepGoals(convertedgoalEE).toString() ?: "0"
                         val eventData = ed1 + ":" + ed2
                         val workout = eventData.split(":")[0]
                         val steps = eventData.split(":")[1].toInt()

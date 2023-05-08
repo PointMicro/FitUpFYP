@@ -25,7 +25,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginLeft="50dp"
             android:text="Current steps"
-            android:textColor="#2561a0"
+            android:textColor="#cbae4c"
             android:textSize="30sp"
             android:textStyle="bold" />
 
@@ -37,7 +37,7 @@
             android:layout_marginRight="50dp"
             android:layout_alignParentEnd="true"
             android:text="0"
-            android:textColor="@color/teal_700"
+            android:textColor="#cbae4c"
             android:textSize="30sp"
             android:textStyle="bold" />
 
@@ -75,7 +75,6 @@
         android:layout_marginHorizontal="37dp"
         android:layout_marginTop="380dp"
         android:gravity="center|center"
-
         android:text="NO SENSOR DETECTED"
         android:textColor="@color/purple_700"
         android:textSize="30sp"
@@ -98,7 +97,7 @@
         android:layout_marginTop="165dp"
         android:layout_marginHorizontal="50dp"
         android:text="HRM"
-        android:textColor="#2561a0"
+        android:textColor="#cbae4c"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -110,7 +109,7 @@
         android:layout_marginHorizontal="37dp"
         android:gravity="center|right"
         android:text="NO SENSOR DETECTED"
-        android:textColor="@color/purple_700"
+        android:textColor="#cbae4c"
         android:textSize="20sp"
         android:textStyle="bold"
         android:visibility="invisible" />

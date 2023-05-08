@@ -65,6 +65,7 @@ class HomeFragment : Fragment(), SensorEventListener {
     private lateinit var hr_text: TextView
     private lateinit var calendar_DB: CalendarDatabase
     private lateinit var weather_Tip: TextView
+    lateinit var current_Steps_TV: TextView
 
 
     /*Binding*/
@@ -131,6 +132,7 @@ class HomeFragment : Fragment(), SensorEventListener {
     weatherimg = view.findViewById(R.id.weather_img)
     hr_text = view.findViewById(R.id.hrm_test)
     weather_Tip = view.findViewById(R.id.weatherTip_TV)
+    current_Steps_TV = view.findViewById(R.id.today_TV)
 
 
     val calendar_db = Room.databaseBuilder(requireContext(), CalendarDatabase::class.java, "calendar_db").build()
@@ -197,6 +199,7 @@ class HomeFragment : Fragment(), SensorEventListener {
         if (stepSensor == null) {
             //Replaces Steps with No sensor available
             unavailableSC.visibility = View.VISIBLE
+            current_Steps_TV.visibility = View.INVISIBLE
             todayCountDisplay.setText("")
 
         }else {
@@ -232,6 +235,19 @@ class HomeFragment : Fragment(), SensorEventListener {
                 Log.d("StepCounter", "Initial step count: $initialStepCount")
                 Log.d("StepCounter", "Current step count: ${event.values[0].toInt()}")
                 Log.d("StepCounter", "Current step count delta: $currentSteps")
+
+                lifecycleScope.launch {
+                    val calendar_db = Room.databaseBuilder(requireContext(),
+                        CalendarDatabase::class.java, "calendar_db").build()
+                    val dao_access = calendar_db.calendarDao()
+
+                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val currentDate = dateFormat.format(Date())
+
+                    dao_access.incrementSteps(initialStepCount,currentDate)
+
+
+                }
             }
         }
     }

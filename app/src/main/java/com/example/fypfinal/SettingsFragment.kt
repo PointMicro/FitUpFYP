@@ -115,12 +115,14 @@ class SettingsFragment : Fragment() {
                         // If the name is correct, delete the database
                         context?.deleteDatabase("userDB")
                         context?.deleteDatabase("calendar_db")
-                        Toast.makeText(requireContext(), "Data has been deleted", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Data has been deleted",
+                            Toast.LENGTH_SHORT).show()
                         requireActivity().finishAffinity()
                         System.exit(0)
                     } else {
                         // If the name is incorrect, show an error message
-                        Toast.makeText(requireContext(), "Name does not match. Deletion cancelled.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Names do not match. Deletion has been cancelled.",
+                            Toast.LENGTH_SHORT).show()
                     }
                     }
                 }
